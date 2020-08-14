@@ -42,6 +42,18 @@ class AOCFormCR287(PetitionForm):
 
     MULTIPLE_FILE_NO_MSG = "Multiple - See Below"
 
+    def get_age_at_offense_date(self, dob):
+        if not dob:
+            return ''
+        dates = self.petition.offense_records.exclude(offense__ciprs_record__offense_date__isnull=True)
+        if dates.count() > 1:
+            return "Varies"
+        else:
+            offense_date = dates.first().offense.ciprs_record.offense_date
+            age = offense_date - dob
+            print(age)
+            return age
+
     def build_form_context(self):
         self.map_file_no()
         self.map_header()
@@ -89,6 +101,8 @@ class AOCFormCR287(PetitionForm):
             self.data["Race"] = record.race
             self.data["Sex"] = record.sex
             self.data["DOB"] = self.format_date(record.dob)
+            self.data["Age"] = self.get_age_at_offense_date(record.dob)
+            print(self.data["Age"])
 
     def map_attorney(self):
         attorney = self.extra["attorney"]
