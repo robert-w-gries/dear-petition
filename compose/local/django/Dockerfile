@@ -18,8 +18,12 @@ RUN apk update \
   && apk add libzmq zeromq-dev \
   # Git
   && apk add git \
+  # curl
+  && apk add curl \
+  # glibc support
+  && apk add libc6-compat \
   # pdftotext
-  && apk add poppler-utils
+  && curl https://dl.xpdfreader.com/xpdf-tools-linux-4.03.tar.gz | tar -xz -C /usr/local/bin/ --strip-components=2 xpdf-tools-linux-4.03/bin64
 
 RUN ln -s /usr/bin/python3 /usr/local/bin/python
 RUN ln -s /usr/bin/pip3 /usr/local/bin/pip
