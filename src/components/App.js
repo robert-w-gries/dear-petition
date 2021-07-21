@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import AppStyled from './App.styled';
 import GlobalStyle from '../styles/GlobalStyle';
 
@@ -10,8 +10,15 @@ import ProtectedRoute from './containers/ProtectedRoute';
 import HomePage from './pages/HomePage/HomePage';
 import GenerationPage from './pages/GenerationPage/GenerationPage';
 import FAQPage from './pages/HelpPage/HelpPage';
+import { CSRF_TOKEN_LS_KEY } from '../constants/authConstants';
 
 function App() {
+  useEffect(() => {
+    if (localStorage.getItem(CSRF_TOKEN_LS_KEY)) {
+      localStorage.removeItem(CSRF_TOKEN_LS_KEY);
+    }
+  }, []);
+
   return (
     <>
       <GlobalStyle />
