@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { Button } from '../../elements/Button';
 import Input from '../../elements/Input/Input';
 import { colorRed } from '../../../styles/colors';
 import { motion } from 'framer-motion';
@@ -11,7 +12,10 @@ export const LoginPageStyled = styled.main`
 `;
 
 export const LoginSplash = styled.div`
-  margin-top: calc(10rem + 2vw);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   max-width: 1000px;
   padding: 1rem;
 `;
@@ -22,22 +26,22 @@ export const SplashLogo = styled.img`
 `;
 
 export const LoginForm = styled.form`
-  margin-top: 10vh;
   flex: 1;
-  width: 100%;
+  width: 90%;
+  max-width: 300px;
   display: flex;
   flex-direction: column;
-  align-items: center;
 `;
 
 export const FormErrors = styled(motion.div)`
+  margin-bottom: 1rem;
   p {
     color: ${colorRed};
   }
 `;
 
 export const InputStyled = styled(Input)`
-  margin: 2rem 0;
+  margin-bottom: 1rem;
 `;
 
 export const PasswordInputStyled = styled(InputStyled)`
@@ -49,5 +53,9 @@ export const ForgotPassword = styled.a`
 `;
 
 export const PasswordWrapper = styled.div`
-  margin: 2rem 0;
+  margin-bottom: 1rem;
+`;
+
+export const LoginButton = styled(Button)`
+  margin-top: 1rem;
 `;

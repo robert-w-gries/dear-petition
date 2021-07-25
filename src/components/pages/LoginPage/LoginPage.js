@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {
+  LoginButton,
   LoginPageStyled,
   LoginSplash,
   SplashLogo,
@@ -10,7 +11,6 @@ import {
   ForgotPassword,
   PasswordWrapper,
 } from './LoginPage.styled';
-import { Button } from '../../elements/Button';
 
 // Assets
 import dearLogo from '../../../assets/img/DEAR_logo.png';
@@ -50,10 +50,10 @@ function Login() {
       }
     } catch (error) {
       if (error.response?.data) {
-        setErrors({
-          ...errors,
+        setErrors((prev) => ({
+          ...prev,
           ...error.response.data,
-        });
+        }));
       }
     }
   };
@@ -67,7 +67,12 @@ function Login() {
         <InputStyled
           label="username"
           value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          onChange={(e) => {
+            setErrors(({ username: prevUser, detail: prevDetail, ...prevErrors }) => ({
+              ...prevErrors,
+            }));
+            setUsername(e.target.value);
+          }}
           errors={errors.username}
         />
         <PasswordWrapper>
@@ -75,7 +80,12 @@ function Login() {
             label="password"
             type="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setErrors(({ password: prevPass, detail: prevDetail, ...prevErrors }) => ({
+                ...prevErrors,
+              }));
+              setPassword(e.target.value);
+            }}
             errors={errors.password}
           />
           <ForgotPassword href="password_reset/">Forgot Password?</ForgotPassword>
@@ -92,7 +102,7 @@ function Login() {
             </FormErrors>
           )}
         </AnimatePresence>
-        <Button onClick={handleLogin}>Log in</Button>
+        <LoginButton onClick={handleLogin}>Log in</LoginButton>
       </LoginForm>
     </LoginPageStyled>
   );
