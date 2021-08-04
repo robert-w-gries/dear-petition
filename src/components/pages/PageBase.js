@@ -48,7 +48,9 @@ function PageBase({ children, className, ...props }) {
 
   useEffect(() => {
     if (localStorage.getItem(USER)) {
-      Axios.get('/users/').then(({ data }) => setAdminUrl(data?.results[0].admin_url || ''));
+      Axios.get('/users/')
+        .then(({ data }) => setAdminUrl(data?.results[0].admin_url || ''))
+        .catch((error) => console.error(error)); // this will be removed when we add redux-toolkit
     }
   }, []);
 

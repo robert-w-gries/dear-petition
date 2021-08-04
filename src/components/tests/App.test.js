@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import App from './components/App';
+import App from '../App';
 
 const mockWindowProperty = (property, value) => {
   const { [property]: originalProperty } = window;
@@ -25,10 +25,6 @@ describe('App behavior without user data', () => {
   });
   test('renders login page', () => {
     render(<App />);
-    expect(screen.getByAltText('DEAR logo')).toBeInTheDocument();
-    expect(screen.getByText('username')).toBeInTheDocument();
-    expect(screen.getByText('password')).toBeInTheDocument();
-    expect(screen.getByText('Forgot Password?')).toBeInTheDocument();
     expect(screen.getByText('Log in')).toBeInTheDocument();
   });
 });
@@ -42,13 +38,16 @@ describe('App behavior with user data', () => {
   };
   mockWindowProperty('localStorage', {
     setItem: jest.fn(),
-    getItem: (key) => ({
-      [key]: user,
-    }),
+    getItem: (key) => {
+      if (key === 'user') {
+        return user;
+      }
+      return jest.fn();
+    },
     removeItem: jest.fn(),
   });
 
-  test('renders home page', () => {
+  test('renders home page', async () => {
     render(<App />);
     expect(screen.getByText('Upload CIPRS Records')).toBeInTheDocument();
   });
