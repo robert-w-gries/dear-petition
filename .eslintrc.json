@@ -8,8 +8,10 @@
   "overrides": [
     {
       "files": [
+        "**/*.mock.js",
         "**/*.test.js",
-        "**/*.test.jsx"
+        "**/*.test.jsx",
+        "__mocks__/*.js"
       ],
       "env": {
         "jest": true

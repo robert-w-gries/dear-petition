@@ -2,20 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import App from '../App';
 
-const mockWindowProperty = (property, value) => {
-  const { [property]: originalProperty } = window;
-  delete window[property];
-  beforeAll(() => {
-    Object.defineProperty(window, property, {
-      configurable: true,
-      writable: true,
-      value,
-    });
-  });
-  afterAll(() => {
-    window[property] = originalProperty;
-  });
-};
+import mockWindowProperty from './windowProperty.mock';
 
 describe('App behavior without user data', () => {
   mockWindowProperty('localStorage', {
@@ -26,6 +13,7 @@ describe('App behavior without user data', () => {
   test('renders login page', () => {
     render(<App />);
     expect(screen.getByText('Log in')).toBeInTheDocument();
+    expect(window.location.pathname === '/login').toBe(true);
   });
 });
 
@@ -38,17 +26,13 @@ describe('App behavior with user data', () => {
   };
   mockWindowProperty('localStorage', {
     setItem: jest.fn(),
-    getItem: (key) => {
-      if (key === 'user') {
-        return user;
-      }
-      return jest.fn();
-    },
+    getItem: (key) => (key === 'user' ? user : jest.fn()),
     removeItem: jest.fn(),
   });
 
-  test('renders home page', async () => {
+  test('renders home page', () => {
     render(<App />);
     expect(screen.getByText('Upload CIPRS Records')).toBeInTheDocument();
+    expect(window.location.pathname === '/').toBe(true);
   });
 });
