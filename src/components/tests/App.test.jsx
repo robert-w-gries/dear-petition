@@ -1,4 +1,5 @@
 import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
 import { render, screen } from '@testing-library/react';
 import App from '../App';
 import * as isChrome from '../../util/isChrome';
@@ -9,6 +10,12 @@ jest.mock('../../util/isChrome');
 beforeEach(() => {
   isChrome.default = false;
 });
+
+const renderWithRouter = (ui, { route = '/' } = {}) => {
+  window.history.pushState({}, 'Test page', route);
+
+  return render(ui, { wrapper: BrowserRouter });
+};
 
 describe('Chrome Browser', () => {
   beforeEach(() => {
@@ -22,12 +29,12 @@ describe('Chrome Browser', () => {
   });
 
   test('does not render browser warning modal', () => {
-    render(<App />);
+    renderWithRouter(<App />);
     expect(screen.queryByText(/It appears you are not using Chrome/)).not.toBeInTheDocument();
   });
 });
 
-describe('App behavior without user data', () => {
+describe('Without authentication', () => {
   mockWindowProperty('localStorage', {
     setItem: jest.fn(),
     getItem: jest.fn(),
@@ -35,7 +42,7 @@ describe('App behavior without user data', () => {
   });
 
   test('renders login page', () => {
-    render(<App />);
+    renderWithRouter(<App />);
     expect(screen.getByText('Log in')).toBeInTheDocument();
     expect(window.location.pathname === '/login').toBe(true);
   });
@@ -44,9 +51,15 @@ describe('App behavior without user data', () => {
     render(<App />);
     expect(screen.getByText(/It appears you are not using Chrome/)).toBeInTheDocument();
   });
+
+  test('redirects from help page to login page', () => {
+    renderWithRouter(<App />, { route: '/help' });
+    expect(screen.getByText('Log in')).toBeInTheDocument();
+    expect(window.location.pathname === '/login').toBe(true);
+  });
 });
 
-describe('App behavior with user data', () => {
+describe('With authentication', () => {
   const user = {
     pk: 1,
     username: 'myuser',
@@ -60,13 +73,19 @@ describe('App behavior with user data', () => {
   });
 
   test('renders home page', () => {
-    render(<App />);
+    renderWithRouter(<App />);
     expect(screen.getByText('Upload CIPRS Records')).toBeInTheDocument();
     expect(window.location.pathname === '/').toBe(true);
   });
 
   test('renders browser warning modal', () => {
-    render(<App />);
+    renderWithRouter(<App />);
     expect(screen.getByText(/It appears you are not using Chrome/)).toBeInTheDocument();
+  });
+
+  test('does not redirect from help page to login page', () => {
+    renderWithRouter(<App />, { route: '/help' });
+    expect(screen.queryByText('Log in')).not.toBeInTheDocument();
+    expect(window.location.pathname === '/help').toBe(true);
   });
 });
