@@ -17,7 +17,7 @@ import { Button } from '../../elements/Button';
 import dearLogo from '../../../assets/img/DEAR_logo.png';
 
 // Routing
-import { useHistory } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
 
 import { AnimatePresence } from 'framer-motion';
 import { loggedIn } from '../../../slices/auth';
@@ -32,6 +32,11 @@ function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
+  const user = localStorage.getItem(USER);
+
+  if (user) {
+    return <Redirect to="/" />;
+  }
 
   const handleLogin = async (e) => {
     e.preventDefault();

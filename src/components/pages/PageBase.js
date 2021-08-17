@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import {
+  LinkWrapper,
   LinksGroup,
   PageBaseStyled,
   PageHeader,
@@ -14,7 +15,7 @@ import { smallerThanTabletLandscape } from '../../styles/media';
 import useAuth from '../../hooks/useAuth';
 import { useLogoutMutation } from '../../service/api';
 
-const LogoLink = styled(Link)`
+const LogoLink = styled(LinkWrapper)`
   border: none;
   padding: 0;
   height: 80px;
@@ -26,7 +27,7 @@ const LogoLink = styled(Link)`
   }
 `;
 
-const LogoutLink = styled(Link)`
+const LogoutLink = styled(LinkWrapper)`
   cursor: pointer;
 `;
 
@@ -38,13 +39,25 @@ function PageBase({ children, className, ...props }) {
   return (
     <PageBaseStyled {...props}>
       <PageHeader>
-        <LogoLink to="/">
-          <PageLogo src={dearLogo} alt="DEAR logo" />
+        <LogoLink>
+          <Link to="/">
+            <PageLogo src={dearLogo} alt="DEAR logo" />
+          </Link>
         </LogoLink>
         <LinksGroup>
-          <Link to="/">New Petition</Link>
-          <Link to="/help">Help</Link>
-          {user?.admin_url ? <a href={user.admin_url}>Admin</a> : null}
+          {user && (
+            <LinkWrapper>
+              <Link to="/">New Petition</Link>
+            </LinkWrapper>
+          )}
+          <LinkWrapper>
+            <Link to="/help">Help</Link>
+          </LinkWrapper>
+          {user?.admin_url ? (
+            <LinkWrapper>
+              <a href={user.admin_url}>Admin</a>
+            </LinkWrapper>
+          ) : null}
           <LogoutLink to="/" onClick={() => logout().then(() => history.replace('/login'))}>
             Logout
           </LogoutLink>
