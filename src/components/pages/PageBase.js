@@ -53,6 +53,9 @@ function PageBase({ children, className, ...props }) {
           <LinkWrapper>
             <Link to="/help">Help</Link>
           </LinkWrapper>
+          <LinkWrapper>
+            <Link to="/users">Users</Link>
+          </LinkWrapper>
           {user?.admin_url ? (
             <LinkWrapper>
               <a href={user.admin_url}>Admin</a>

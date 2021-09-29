@@ -14,6 +14,7 @@ import GenerationPage from './pages/GenerationPage/GenerationPage';
 import FAQPage from './pages/HelpPage/HelpPage';
 import LoginPage from './pages/LoginPage/LoginPage';
 import { CSRF_TOKEN_LS_KEY, USER } from '../constants/authConstants';
+import UsersPage from './pages/UsersPage/UsersPage';
 import useBrowserWarning from '../hooks/useBrowserWarning';
 
 const WarningContent = styled.div`
@@ -72,6 +73,9 @@ function App() {
             </ProtectedRoute>
             <ProtectedRoute exact path="/generate/:batchId">
               <GenerationPage />
+            </ProtectedRoute>
+            <ProtectedRoute exact path="/users">
+              <UsersPage />
             </ProtectedRoute>
             <ProtectedRoute exact path="/help">
               <FAQPage />
