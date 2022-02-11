@@ -75,6 +75,7 @@ const limitSizes = [
   { label: '50', value: 50 },
 ];
 
+// TODO: Replace this and let's never speak of this code again
 const calculatePageIndices = (current, numPages) => {
   let startIndex = current - VISIBLE_OFFSET;
   let endIndex = current + VISIBLE_OFFSET;
