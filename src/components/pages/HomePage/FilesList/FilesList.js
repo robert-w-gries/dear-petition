@@ -16,7 +16,6 @@ const PrepareButton = styled(Button)`
 function FilesList({ files, handleRemoveFile, handlePreparePetitions, ...props }) {
   return (
     <FilesListWrapper
-      {...props}
       key="files_list"
       initial={{ opacity: 0, x: '50' }}
       animate={{ opacity: 1, x: '0' }}
