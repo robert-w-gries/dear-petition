@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { colorPrimary, colorWhite } from '../../../styles/colors';
 import { smallerThanTabletLandscape } from '../../../styles/media';
 
-export const Markdown = styled(ReactMarkdown)`
+export const Markdown = styled.div`
   & h1,
   & h2,
   & h3,
@@ -56,12 +56,13 @@ export const Markdown = styled(ReactMarkdown)`
 
 export const ExpandableHeader = styled.div`
   display: flex;
-  align-items: baseline;
+  align-items: center;
   margin-right: auto;
+  margin-bottom: 1rem;
   gap: 1rem;
   cursor: pointer;
-  & h6 {
-    font-size: 2rem;
+  & > :first-child {
+    margin-bottom: 0;
     user-select: none;
   }
   & svg {

@@ -78,7 +78,7 @@ function HomePage() {
         hasDups = true;
       }
     });
-    if (!hasDups) setFiles(_mergeFileSets(drop.files));
+    if (!hasDups) setFiles((prev) => new Set([...prev, ...drop.files]));
   };
 
   const handleRemoveFile = (file) => {

@@ -323,3 +323,5 @@ yarn-error.log*
 latest.dump
 notebooks
 src/ciprs-reader
+
+.parcel-cache
