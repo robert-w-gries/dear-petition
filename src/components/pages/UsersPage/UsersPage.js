@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import cx from 'classnames';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import UsersTable from './UsersTable';
@@ -178,12 +179,14 @@ const UsersPage = () => {
                   if (page !== 1 && page !== numPages && !withinLeft && !withinRight) {
                     return page === startPage - 1 || page === endPage + 1 ? '...' : null;
                   }
+                  const isCurrentPage = idx === offset / limit.value
                   return (
                     <button
+                      className={cx("p-3 border-2 rounded hover:border-blue-500", isCurrentPage ? 'border-blue-500': 'border-gray-500')}
                       type="button"
                       key={idx}
                       onClick={() => setOffset(idx * limit.value)}
-                      disabled={idx === offset / limit.value}
+                      disabled={isCurrentPage}
                     >
                       {page}
                     </button>
