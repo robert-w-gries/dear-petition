@@ -109,7 +109,7 @@ const UsersPage = () => {
     if (authenticatedUser?.is_admin !== true) {
       history.replace('/');
     }
-  }, [authenticatedUser]);
+  }, [authenticatedUser, history]);
 
   const numUsers = data?.count ?? 0;
   useEffect(() => {
@@ -179,10 +179,13 @@ const UsersPage = () => {
                   if (page !== 1 && page !== numPages && !withinLeft && !withinRight) {
                     return page === startPage - 1 || page === endPage + 1 ? '...' : null;
                   }
-                  const isCurrentPage = idx === offset / limit.value
+                  const isCurrentPage = idx === offset / limit.value;
                   return (
                     <button
-                      className={cx("p-3 border-2 rounded hover:border-blue-500", isCurrentPage ? 'border-blue-500': 'border-gray-500')}
+                      className={cx(
+                        'p-3 border-2 rounded hover:border-blue-500',
+                        isCurrentPage ? 'border-blue-500' : 'border-gray-500'
+                      )}
                       type="button"
                       key={idx}
                       onClick={() => setOffset(idx * limit.value)}

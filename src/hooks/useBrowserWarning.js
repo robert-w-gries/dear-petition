@@ -7,7 +7,7 @@ const useBrowserWarning = () => {
     if (!isChrome) {
       setShouldDisplay(true);
     }
-  }, [isChrome]);
+  }, []);
   return [shouldDisplay, () => setShouldDisplay(false)];
 };
 
