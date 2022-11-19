@@ -1,20 +1,16 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import styled from 'styled-components';
-import AppStyled from './App.styled';
-import GlobalStyle from '../styles/GlobalStyle';
-
-// Routing
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import ProtectedRoute from './containers/ProtectedRoute';
-
+import { CSRF_TOKEN_LS_KEY, USER } from '~/src/constants/authConstants';
+import useBrowserWarning from '~/src/hooks/useBrowserWarning';
+import GlobalStyle from '~/src/styles/GlobalStyle';
+import ProtectedRoute from './ProtectedRoute';
 import { Button } from './elements/Button';
 import Modal from './elements/Modal/Modal';
 import HomePage from './pages/HomePage/HomePage';
 import GenerationPage from './pages/GenerationPage/GenerationPage';
 import FAQPage from './pages/HelpPage/HelpPage';
 import LoginPage from './pages/LoginPage/LoginPage';
-import { CSRF_TOKEN_LS_KEY, USER } from '../constants/authConstants';
-import useBrowserWarning from '../hooks/useBrowserWarning';
 import UsersPage from './pages/UsersPage/UsersPage';
 import AgenciesPage from './pages/AgenciesPage';
 
@@ -45,7 +41,7 @@ const BrowserWarning = ({ hideModal, showWarning }) => (
   </WarningModal>
 );
 
-function App() {
+export function App() {
   const [showWarning, hideModal] = useBrowserWarning();
   useEffect(() => {
     // avoid local storage now we're using redux and properly using cookies
@@ -60,38 +56,36 @@ function App() {
   return (
     <>
       <GlobalStyle />
-      <BrowserRouter>
-        <AppStyled>
-          <Switch>
-            <Route path="/login">
-              <>
-                <LoginPage />
-                <BrowserWarning showWarning={showWarning} hideModal={hideModal} />
-              </>
-            </Route>
-            <ProtectedRoute exact path="/">
-              <>
-                <HomePage />
-                <BrowserWarning showWarning={showWarning} hideModal={hideModal} />
-              </>
-            </ProtectedRoute>
-            <ProtectedRoute exact path="/generate/:batchId">
-              <GenerationPage />
-            </ProtectedRoute>
-            <ProtectedRoute exact path="/users" isAdminOnly>
-              <UsersPage />
-            </ProtectedRoute>
-            <ProtectedRoute exact path="/agencies" isAdminOnly>
-              <AgenciesPage />
-            </ProtectedRoute>
-            <ProtectedRoute exact path="/help">
-              <FAQPage />
-            </ProtectedRoute>
-          </Switch>
-        </AppStyled>
-      </BrowserRouter>
+      <div className='flex flex-col h-min-screen'>
+        <BrowserRouter>
+            <Switch>
+              <Route path="/login">
+                <>
+                  <LoginPage />
+                  <BrowserWarning showWarning={showWarning} hideModal={hideModal} />
+                </>
+              </Route>
+              <ProtectedRoute exact path="/">
+                <>
+                  <HomePage />
+                  <BrowserWarning showWarning={showWarning} hideModal={hideModal} />
+                </>
+              </ProtectedRoute>
+              <ProtectedRoute exact path="/generate/:batchId">
+                <GenerationPage />
+              </ProtectedRoute>
+              <ProtectedRoute exact path="/users" isAdminOnly>
+                <UsersPage />
+              </ProtectedRoute>
+              <ProtectedRoute exact path="/agencies" isAdminOnly>
+                <AgenciesPage />
+              </ProtectedRoute>
+              <ProtectedRoute exact path="/help">
+                <FAQPage />
+              </ProtectedRoute>
+            </Switch>
+        </BrowserRouter>
+      </div>
     </>
   );
 }
-
-export default App;

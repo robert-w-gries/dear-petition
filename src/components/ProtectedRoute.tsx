@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Redirect, Route } from 'react-router-dom';
 
-import useAuth from '../../hooks/useAuth';
-import { useLazyCheckLoginQuery } from '../../service/api';
-import { loggedIn } from '../../slices/auth';
+import useAuth from '~/src/hooks/useAuth';
+import { useLazyCheckLoginQuery } from '~/src/service/api';
+import { loggedIn } from '~/src/slices/auth';
 
 function ProtectedRoute({ children, isAdminOnly, ...props }) {
   const { user } = useAuth();

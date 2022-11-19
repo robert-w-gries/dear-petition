@@ -4,9 +4,9 @@ import { axiosBaseQuery } from './axios';
 export const api = createApi({
   // TODO: use baseUrl here instead of in axios.js
   baseQuery: axiosBaseQuery(),
-  tagTypes: ['AgencyList', 'Petition', 'User'],
+  tagTypes: ['AgencyList', 'ContactFilterOptions', 'Petition', 'User'],
   endpoints: (builder) => ({
-    agencies: builder.query({
+    agencies: builder.query<unknown, { queryString: string }>({
       query: ({ queryString }) => ({
         url: `contact/?category=agency&${queryString}`,
         method: 'get',

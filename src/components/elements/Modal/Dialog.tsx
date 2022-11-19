@@ -1,4 +1,3 @@
-import React from 'react';
 import { Dialog } from '@headlessui/react';
 
 // This component doesn't use our other modal code and instead uses headless ui

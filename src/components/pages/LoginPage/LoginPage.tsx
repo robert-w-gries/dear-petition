@@ -1,20 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import { AnimatePresence } from 'framer-motion';
+import { useHistory } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
+import styled from 'styled-components';
+import dearLogo from '~/src/assets/img/DEAR_logo.png';
+import useAuth from '~/src/hooks/useAuth';
+import { useLoginMutation } from '~/src/service/api';
+import { loggedIn } from '~/src/slices/auth';
+
 import { SplashLogo, FormErrors, InputStyled, PasswordInputStyled } from './LoginPage.styled';
 import { Button } from '../../elements/Button';
-
-// Assets
-import dearLogo from '../../../assets/img/DEAR_logo.png';
-
-// Routing
-import { useHistory } from 'react-router-dom';
-
-import { AnimatePresence } from 'framer-motion';
-import useAuth from '../../../hooks/useAuth';
-import { loggedIn } from '../../../slices/auth';
-import { useLoginMutation } from '../../../service/api';
-import styled from 'styled-components';
 
 const LoginButton = styled(Button)`
   padding: 1rem 3rem;
