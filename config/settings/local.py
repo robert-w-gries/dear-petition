@@ -108,3 +108,7 @@ LOGGING = {
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+
+if DEBUG:
+    import mimetypes
+    mimetypes.add_type("application/javascript", ".js", True)

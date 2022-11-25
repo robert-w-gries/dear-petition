@@ -32,7 +32,13 @@ const WarningModal = styled(Modal)`
   }
 `;
 
-const BrowserWarning = ({ hideModal, showWarning }) => (
+const BrowserWarning = ({
+  hideModal,
+  showWarning,
+}: {
+  hideModal: () => void;
+  showWarning: boolean;
+}) => (
   <WarningModal isVisible={showWarning} closeModal={hideModal}>
     <h3>WARNING</h3>
     <p>It appears you are not using Chrome. This may cause issues while using the application.</p>
@@ -56,34 +62,34 @@ export function App() {
   return (
     <>
       <GlobalStyle />
-      <div className='flex flex-col h-min-screen'>
+      <div className="flex flex-col h-min-screen">
         <BrowserRouter>
-            <Switch>
-              <Route path="/login">
-                <>
-                  <LoginPage />
-                  <BrowserWarning showWarning={showWarning} hideModal={hideModal} />
-                </>
-              </Route>
-              <ProtectedRoute exact path="/">
-                <>
-                  <HomePage />
-                  <BrowserWarning showWarning={showWarning} hideModal={hideModal} />
-                </>
-              </ProtectedRoute>
-              <ProtectedRoute exact path="/generate/:batchId">
-                <GenerationPage />
-              </ProtectedRoute>
-              <ProtectedRoute exact path="/users" isAdminOnly>
-                <UsersPage />
-              </ProtectedRoute>
-              <ProtectedRoute exact path="/agencies" isAdminOnly>
-                <AgenciesPage />
-              </ProtectedRoute>
-              <ProtectedRoute exact path="/help">
-                <FAQPage />
-              </ProtectedRoute>
-            </Switch>
+          <Switch>
+            <Route path="/login">
+              <>
+                <LoginPage />
+                <BrowserWarning showWarning={showWarning} hideModal={hideModal} />
+              </>
+            </Route>
+            <ProtectedRoute exact path="/">
+              <>
+                <HomePage />
+                <BrowserWarning showWarning={showWarning} hideModal={hideModal} />
+              </>
+            </ProtectedRoute>
+            <ProtectedRoute exact path="/generate/:batchId">
+              <GenerationPage />
+            </ProtectedRoute>
+            <ProtectedRoute exact path="/users" isAdminOnly>
+              <UsersPage />
+            </ProtectedRoute>
+            <ProtectedRoute exact path="/agencies" isAdminOnly>
+              <AgenciesPage />
+            </ProtectedRoute>
+            <ProtectedRoute exact path="/help">
+              <FAQPage />
+            </ProtectedRoute>
+          </Switch>
         </BrowserRouter>
       </div>
     </>

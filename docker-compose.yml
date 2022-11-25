@@ -17,7 +17,7 @@ services:
     env_file:
       - ./.envs/.local/.django
     ports:
-      - "8000:8000"
+      - '8000:8000'
     tty: true
     stdin_open: true
 
@@ -36,7 +36,7 @@ services:
     depends_on:
       - django
     ports:
-      - "3000:3000"
+      - '3000:3000'
     volumes:
       - ./:/code/
       - /code/node_modules
@@ -51,7 +51,7 @@ services:
   celery:
     <<: *django
     ports:
-      - "6379:6379"
+      - '6379:6379'
     environment:
       - COLUMNS=80 #Necessary because of some annoying zero-width shell error
     command: celery worker --app=dear_petition.taskapp --beat --loglevel=info
@@ -60,7 +60,7 @@ services:
     <<: *django
     image: dear_petition_local_jupyter
     ports:
-      - "8001:8888"
+      - '8001:8888'
     depends_on:
       - postgres
       - redis

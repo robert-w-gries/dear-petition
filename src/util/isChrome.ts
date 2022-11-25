@@ -1,8 +1,8 @@
 // Source: https://stackoverflow.com/a/13348618
-const isChromium = window.chrome;
+const isChromium = (window as any).chrome;
 const winNav = window.navigator;
 const vendorName = winNav.vendor;
-const isOpera = typeof window.opr !== 'undefined';
+const isOpera = typeof (window as any).opr !== 'undefined';
 const isIEedge = winNav.userAgent.indexOf('Edge') > -1;
 const isIOSChrome = winNav.userAgent.match('CriOS');
 

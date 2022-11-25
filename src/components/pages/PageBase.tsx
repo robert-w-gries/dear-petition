@@ -1,4 +1,3 @@
-import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
@@ -10,12 +9,12 @@ import {
   PageLogo,
   PageContentWrapper,
 } from './PageBase.styled';
-import dearLogo from '../../assets/img/DEAR_logo.png';
 import { smallerThanTabletLandscape } from '../../styles/media';
 
 import useAuth from '../../hooks/useAuth';
 import { useLogoutMutation } from '../../service/api';
 import { loggedOut } from '../../slices/auth';
+import { DEAR_LOGO_HEADER_URL } from '~/src/constants/assetConstants';
 
 const LogoLink = styled(LinkWrapper)`
   border: none;
@@ -50,7 +49,7 @@ function PageBase({ children, className, ...props }) {
         <PageHeader>
           <LogoLink>
             <Link to="/">
-              <PageLogo src={dearLogo} alt="DEAR logo" />
+              <PageLogo src={DEAR_LOGO_HEADER_URL} alt="DEAR logo" />
             </Link>
           </LogoLink>
           <LinksGroup>

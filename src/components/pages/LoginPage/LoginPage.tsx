@@ -4,19 +4,25 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
-import dearLogo from '~/src/assets/img/DEAR_logo.png';
 import useAuth from '~/src/hooks/useAuth';
 import { useLoginMutation } from '~/src/service/api';
 import { loggedIn } from '~/src/slices/auth';
 
 import { SplashLogo, FormErrors, InputStyled, PasswordInputStyled } from './LoginPage.styled';
-import { Button } from '../../elements/Button';
+import { Button } from '~/src/components/elements/Button';
+import { DEAR_LOGO_LOGIN_URL } from '~/src/constants/assetConstants';
+import { isObject } from '~/src/types';
 
 const LoginButton = styled(Button)`
   padding: 1rem 3rem;
   font-size: 1.7rem;
   width: 100%;
 `;
+
+type FormValues = {
+  username: string;
+  password: string;
+};
 
 function Login() {
   const { user: authenticatedUser } = useAuth();
@@ -25,7 +31,7 @@ function Login() {
   const dispatch = useDispatch();
 
   // State
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<Record<string, string[]>>({});
 
   useEffect(() => {
     if (authenticatedUser) {
@@ -33,22 +39,21 @@ function Login() {
     }
   }, [authenticatedUser]);
 
-  const { control, handleSubmit } = useForm({
+  const { control, handleSubmit } = useForm<FormValues>({
     defaultValues: {
       username: '',
       password: '',
     },
   });
 
-  const handleLogin = async ({ username, password }) => {
-    // e.preventDefault();
+  const handleLogin = async ({ username, password }: FormValues) => {
     setErrors({});
     try {
       const { user } = await login({ username, password }).unwrap();
       dispatch(loggedIn(user));
       history.replace('/');
     } catch (error) {
-      if (error?.data) {
+      if (isObject(error) && 'data' in error && isObject(error.data)) {
         setErrors((prev) => ({
           ...prev,
           ...error.data,
@@ -60,7 +65,7 @@ function Login() {
   return (
     <main className="flex-1 flex flex-col gap-[10rem] items-center w-100 h-100 mt-20">
       <div className="max-w-[950px] p-2">
-        <SplashLogo src={dearLogo} alt="DEAR logo" />
+        <SplashLogo src={DEAR_LOGO_LOGIN_URL} alt="DEAR logo" />
       </div>
       <form
         className="flex flex-col items-center gap-4 w-[190px]"

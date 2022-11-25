@@ -2,7 +2,7 @@ import { BaseQueryFn } from '@reduxjs/toolkit/dist/query';
 import axios, { AxiosError, AxiosRequestConfig, Method } from 'axios';
 import { loggedOut } from '~/src/slices/auth';
 import { CSRF_COOKIE_NAME, CSRF_HEADER_KEY } from '~/src/constants/authConstants';
-import { isObject } from '~/src/types';
+import { isNullish, isObject } from '~/src/types';
 
 const Axios = axios.create({
   baseURL: `/petition/api/`,
@@ -14,7 +14,8 @@ const Axios = axios.create({
 
 export default Axios;
 
-const isAxiosError = (error: unknown): error is AxiosError<unknown> => isObject(error) && 'isAxiosError' in error && !!error.isAxiosError;
+const isAxiosError = (error: unknown): error is AxiosError<unknown> =>
+  isObject(error) && 'isAxiosError' in error && !!error.isAxiosError;
 
 type QueryArgs = {
   url: string;
@@ -22,11 +23,17 @@ type QueryArgs = {
   params?: unknown;
   data?: unknown;
   timeout?: number;
-}
+};
 export const axiosBaseQuery =
   (): BaseQueryFn<QueryArgs> =>
   async ({ url, method, timeout, data, params }, api) => {
-    const requestConfig: AxiosRequestConfig = { url, method, data, params, ...(!!timeout && { timeout }) };
+    const requestConfig: AxiosRequestConfig = {
+      url,
+      method,
+      data,
+      params,
+      ...(!isNullish(timeout) && { timeout }),
+    };
     try {
       const result = await Axios(requestConfig);
       return { data: result.data };

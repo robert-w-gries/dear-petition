@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import isChrome from '../util/isChrome';
+import isChrome from '~/src/util/isChrome';
 
-const useBrowserWarning = () => {
+const useBrowserWarning = (): [boolean, () => void] => {
   const [shouldDisplay, setShouldDisplay] = useState(false);
   useEffect(() => {
     if (!isChrome) {

@@ -41,7 +41,7 @@ export const api = createApi({
       query: ({ params }) => ({ url: 'contact/get_filter_options/', method: 'get', params }),
       providesTags: (result) => (result ? ['ContactFilterOptions'] : []),
     }),
-    checkLogin: builder.query({
+    checkLogin: builder.query<unknown, unknown>({
       query: () => ({ url: 'token/', method: 'get' }),
     }),
     createBatch: builder.mutation({
@@ -52,7 +52,7 @@ export const api = createApi({
       providesTags: (result) =>
         result ? result.petitions.map(({ pk }) => [{ type: 'Petition', id: pk }]) : [],
     }),
-    login: builder.mutation({
+    login: builder.mutation<unknown, unknown>({
       query: (data) => ({ url: 'token/', method: 'post', data }),
     }),
     logout: builder.mutation({
