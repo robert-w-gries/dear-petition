@@ -2,6 +2,7 @@
 !.coveragerc
 !.env
 !.pylintrc
+!.postcssrc
 **/*.DS_Store
 **/__pycache__
 **/*.pyc

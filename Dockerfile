@@ -2,7 +2,7 @@ FROM node:16-slim as static_files
 
 WORKDIR /code
 ENV PATH /code/node_modules/.bin:$PATH
-COPY package.json package-lock.json tailwind.config.js /code/
+COPY package.json package-lock.json tsconfig.json tailwind.config.js .postcssrc /code/
 RUN npm install --silent
 COPY ./public /code/public/
 COPY ./src /code/src/
@@ -90,6 +90,7 @@ COPY postdeploy.sh /code/postdeploy.sh
 RUN touch /code/.env
 # Copy in node-built files
 COPY --from=static_files /code/build /code/build
+RUN mv /code/build/static/index.html /code/build/
 
 FROM base AS deploy
 
