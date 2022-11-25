@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Redirect, Route, RouteProps } from 'react-router-dom';
 
-import useAuth from '~/src/hooks/useAuth';
+import { useAuth } from '~/src/hooks/useAuth';
 import { useLazyCheckLoginQuery } from '~/src/service/api';
 import { loggedIn } from '~/src/slices/auth';
 

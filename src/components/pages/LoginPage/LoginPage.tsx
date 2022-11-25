@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
-import useAuth from '~/src/hooks/useAuth';
+import { useAuth } from '~/src/hooks/useAuth';
 import { useLoginMutation } from '~/src/service/api';
 import { loggedIn } from '~/src/slices/auth';
 

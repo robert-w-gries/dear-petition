@@ -368,7 +368,7 @@ class PetitionDocument(models.Model):
 
     @property
     def jurisdiction(self):
-        return self.petition.jurisdiction
+        return self.petition.get_jurisdiction_display()
 
     @property
     def county(self):

@@ -1,4 +1,4 @@
-export default [
+const US_STATES = [
   ['AL', 'Alabama'],
   ['AZ', 'Arizona'],
   ['AR', 'Arkansas'],
@@ -50,8 +50,13 @@ export default [
   ['WY', 'Wyoming'],
   ['AK', 'Alaska'],
   ['HI', 'Hawaii'],
-].sort((a, b) => {
+] as const;
+
+const SORTED_STATES = [...US_STATES].sort((a, b) => {
   if (a[0] > b[0]) return 1;
   if (b[0] > a[0]) return -1;
   return 0;
 });
+
+export type State = typeof US_STATES[number];
+export default SORTED_STATES;

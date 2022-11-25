@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { useForm } from 'react-hook-form';
-import { useModifyUserMutation } from '../../../service/api';
-import useAuth from '../../../hooks/useAuth';
-import { Button } from '../../elements/Button';
+import { useDeleteUserMutation, useModifyUserMutation } from '~/src/service/api';
+import { useAuth } from '~/src/hooks/useAuth';
+import { Button } from '~/src/components/elements/Button';
 import {
   SortableHeader,
   Table,
@@ -92,7 +92,7 @@ const formatLastLogin = (lastLogin) => (lastLogin ? new Date(lastLogin).toLocale
 const DisplayCells = ({ user, onStartEdit }) => {
   const { user: myUser } = useAuth();
   const [isModalVisible, setModalVisible] = useState(false);
-  const [triggerUpdate] = useModifyUserMutation();
+  const [triggerDelete] = useDeleteUserMutation();
   const disabledDelete = myUser.pk === user.pk;
   return (
     <>
@@ -125,10 +125,7 @@ const DisplayCells = ({ user, onStartEdit }) => {
             </p>
             <p>{user.username}</p>
             <ActionsRow>
-              <Button
-                colorClass="caution"
-                onClick={() => triggerUpdate({ id: user.pk, method: 'delete' })}
-              >
+              <Button colorClass="caution" onClick={() => triggerDelete({ id: user.pk })}>
                 Confirm
               </Button>
               <Button onClick={() => setModalVisible(false)} colorClass="neutral">

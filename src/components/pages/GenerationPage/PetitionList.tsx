@@ -184,7 +184,7 @@ function PetitionRow({
     <>
       <TableRow key={petition.pk} backgroundColor={backgroundColor}>
         <TableCell>{petition.county}</TableCell>
-        <TableCell>{petition.jurisdiction}</TableCell>
+        <TableCell>{petition.jurisdiction.replace(' COURT', '')}</TableCell>
         <TableCell>
           <TooltipWrapper tooltipMessage={PETITION_FORM_NAMES[petition.form_type]}>
             <div className="w-max border-b border-gray-700">{petition.form_type}</div>
@@ -286,7 +286,7 @@ export default function PetitionList({
   setFormErrors,
 }) {
   return (
-    <Table className="text-[1.7rem]" columnSizes="4fr 4fr 3fr 3fr 3fr 3fr 2fr">
+    <Table className="text-[1.7rem]" columnSizes="4fr 3fr 3fr 3fr 3fr 3fr 2fr">
       <TableHeader>
         <TableCell header>County</TableCell>
         <TableCell header>Jurisdiction</TableCell>
