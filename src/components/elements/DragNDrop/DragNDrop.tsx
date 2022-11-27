@@ -1,118 +1,128 @@
-import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import { DragNDropStyled, FileInputStyled } from './DragNDrop.styled';
+import React, { Ref, useEffect, useState } from 'react';
+import { DragNDropStyled } from './DragNDrop.styled';
 
 const EXCEED_LIMIT_MSG = 'Maximum file limit exceeded';
 const BAD_TYPE_MSG = 'One or more of your files is not the right type';
 
-const DragNDrop = React.forwardRef((props, ref) => {
-  const { children, mimeTypes, maxFiles, onDrop, onDragEnter, onDragLeave } = props;
-  const [draggedOver, setDraggedOver] = useState(false);
+export type DropResult = {
+  warnings: string[];
+  errors: string[];
+  files: File[];
+};
 
-  useEffect(() => {
-    // If user misses drag target, override browser's default behavior
-    function cancel(e) {
-      e.preventDefault();
-    }
-    window.addEventListener('dragover', cancel, false);
-    window.addEventListener('drop', cancel, false);
-    return () => {
-      window.removeEventListener('dragover', cancel, false);
-      window.removeEventListener('drop', cancel, false);
-    };
-  }, []);
+type DragNDropProps = {
+  children: React.ReactNode;
+  mimeTypes: string[];
+  maxFiles: number;
+  onDrop: (drop: DropResult) => void;
+  onDragEnter?: (e: React.DragEvent<HTMLLabelElement>) => void;
+  onDragLeave?: (e: React.DragEvent<HTMLLabelElement>) => void;
+};
 
-  const handleDragEnter = (e) => {
-    e.preventDefault();
-    setDraggedOver(true);
-    if (onDragEnter) onDragEnter(e);
-  };
+const DragNDrop = React.forwardRef(
+  (
+    { children, mimeTypes, maxFiles, onDrop, onDragEnter, onDragLeave }: DragNDropProps,
+    ref: Ref<HTMLInputElement>
+  ) => {
+    const [draggedOver, setDraggedOver] = useState(false);
 
-  const handleDragLeave = (e) => {
-    e.preventDefault();
-    setDraggedOver(false);
-    if (onDragLeave) onDragLeave(e);
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-
-    const { dropEffect, files } = e.dataTransfer;
-    if (dropEffect !== 'none') return;
-
-    _handleFiles(files);
-  };
-
-  const handleManualUpload = (e) => {
-    _handleFiles(e.target.files);
-  };
-
-  const _handleFiles = (files) => {
-    const drop = {
-      warnings: [],
-      errors: [],
-      files: [],
-    };
-
-    if (files.length > maxFiles) {
-      drop.errors.push(EXCEED_LIMIT_MSG);
-    } else {
-      let badTypes = false;
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        if (mimeTypes && !mimeTypes.includes(file.type)) {
-          badTypes = true;
-          continue;
-        }
-
-        drop.files.push(file);
+    useEffect(() => {
+      // If user misses drag target, override browser's default behavior
+      function cancel(e: DragEvent) {
+        e.preventDefault();
       }
-      if (badTypes) drop.warnings.push(BAD_TYPE_MSG);
-    }
+      window.addEventListener('dragover', cancel, false);
+      window.addEventListener('drop', cancel, false);
+      return () => {
+        window.removeEventListener('dragover', cancel, false);
+        window.removeEventListener('drop', cancel, false);
+      };
+    }, []);
 
-    onDrop(drop);
-  };
+    const handleDragEnter = (e: React.DragEvent<HTMLLabelElement>) => {
+      e.preventDefault();
+      setDraggedOver(true);
+      if (onDragEnter) onDragEnter(e);
+    };
 
-  return (
-    <>
-      <FileInputStyled
-        ref={ref}
-        type="file"
-        name="ciprs_file"
-        id="ciprs_file"
-        onChange={handleManualUpload}
-        accept={mimeTypes.join(',')}
-        multiple={!maxFiles || maxFiles > 1}
-      />
-      <DragNDropStyled
-        htmlFor="ciprs_file"
-        onDragOver={(e) => e.preventDefault()}
-        onDragEnter={handleDragEnter}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-        draggedOver={draggedOver}
-        positionTransition
-      >
-        {children}
-      </DragNDropStyled>
-    </>
-  );
-});
+    const handleDragLeave = (e: React.DragEvent<HTMLLabelElement>) => {
+      e.preventDefault();
+      setDraggedOver(false);
+      if (onDragLeave) onDragLeave(e);
+    };
 
-DragNDrop.propTypes = {
-  /** Respond to a file drop or input */
-  onDrop: PropTypes.func.isRequired,
-  mimeTypes: PropTypes.arrayOf(PropTypes.string),
-  maxFiles: PropTypes.number,
-  onDragEnter: PropTypes.func,
-  onDragLeave: PropTypes.func,
-};
+    const handleDrop = (e: React.DragEvent<HTMLLabelElement>) => {
+      e.preventDefault();
 
-DragNDrop.defaultProps = {
-  mimeTypes: [],
-  maxFiles: 8,
-  onDragEnter: undefined,
-  onDragLeave: undefined,
-};
+      if (!e.dataTransfer) {
+        return;
+      }
+
+      const { dropEffect, files } = e.dataTransfer;
+      if (dropEffect !== 'none') return;
+
+      _handleFiles(files);
+    };
+
+    const handleManualUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (!e?.target?.files) {
+        return;
+      }
+      _handleFiles(e.target.files);
+    };
+
+    const _handleFiles = (files: FileList) => {
+      const drop: DropResult = {
+        warnings: [],
+        errors: [],
+        files: [],
+      };
+
+      if (files.length > maxFiles) {
+        drop.errors.push(EXCEED_LIMIT_MSG);
+      } else {
+        let badTypes = false;
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          if (mimeTypes && !mimeTypes.includes(file.type)) {
+            badTypes = true;
+            continue;
+          }
+
+          drop.files.push(file);
+        }
+        if (badTypes) drop.warnings.push(BAD_TYPE_MSG);
+      }
+
+      onDrop(drop);
+    };
+
+    return (
+      <>
+        <input
+          ref={ref}
+          className="w-[0.1px] h-[0.1px] opacity-0 overflow-hidden absolute z-[-1]"
+          type="file"
+          name="ciprs_file"
+          id="ciprs_file"
+          onChange={handleManualUpload}
+          accept={mimeTypes.join(',')}
+          multiple={!maxFiles || maxFiles > 1}
+        />
+        <DragNDropStyled
+          htmlFor="ciprs_file"
+          onDragOver={(e) => e.preventDefault()}
+          onDragEnter={handleDragEnter}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          draggedOver={draggedOver}
+          positionTransition
+        >
+          {children}
+        </DragNDropStyled>
+      </>
+    );
+  }
+);
 
 export default DragNDrop;

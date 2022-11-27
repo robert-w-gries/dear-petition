@@ -11,7 +11,9 @@ export const FileInputStyled = styled.input`
   z-index: -1;
 `;
 
-export const DragNDropStyled = styled(motion.label)`
+export const DragNDropStyled = styled(motion.label)<
+  { draggedOver: boolean } & { positionTransition: boolean }
+>`
   cursor: pointer;
   border-radius: 2px;
   border: 5px dashed ${(props) => (props.draggedOver ? colorPrimary : colorGrey)};

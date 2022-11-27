@@ -1,9 +1,18 @@
-import React, { useEffect, useRef, useState } from 'react';
+import cx from 'classnames';
+import { useRef, useState } from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
-import { colorRed } from '../../../styles/colors';
-import { fontError } from '../../../styles/fonts';
+import { useHistory } from 'react-router-dom';
+
+import { Button } from '~/src/components/elements/Button/Button';
+import { Spinner } from '~/src/components/elements/Spinner';
+import { Tooltip } from '~/src/components/elements/Tooltip/Tooltip';
+import DragNDrop, { DropResult } from '~/src/components/elements/DragNDrop/DragNDrop';
+import { useTimer } from '~/src/hooks/useTimeout';
+import { useCreateBatchMutation } from '~/src/service/api';
+
+import FilesList from './FilesList/FilesList';
 import {
   HomePageStyled,
   HomeContent,
@@ -12,32 +21,9 @@ import {
   DragWarnings,
 } from './HomePage.styled';
 
-import { Tooltip } from '../../elements/Tooltip/Tooltip';
-import Modal from '../../elements/Modal/Modal';
-import DragNDrop from '../../elements/DragNDrop/DragNDrop';
-import FilesList from './FilesList/FilesList';
-import { useHistory } from 'react-router-dom';
-
-import { useCreateBatchMutation } from '../../../service/api';
-
 const ALLOWED_MIME_TYPES = ['application/pdf'];
 const MAX_FILES = 8;
-const MAX_FILE_SIZE = 30000;
 const LONG_WAIT_TIMEOUT = 5; // seconds
-
-const ModalStyled = styled(Modal)`
-  & > div {
-    width: 500px;
-    gap: 2rem;
-    padding: 4rem;
-    p {
-      color: ${colorRed};
-      font-family: ${fontError};
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
-  }
-`;
 
 const FilesInputContainer = styled.div`
   display: flex;
@@ -74,31 +60,23 @@ const ExperimentalMessage = styled.div`
 `;
 
 function HomePage() {
-  const fileInputRef = React.createRef();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [parserMode, setParserMode] = useState(true);
-  const [dragWarnings, setDragWarnings] = useState();
-  const [dragErrors, setDragErrors] = useState();
-  const [files, setFiles] = useState(new Set());
-  const [showModal, setShowModal] = useState(false);
-  const [modalError, setModalError] = useState();
+  const [dragWarnings, setDragWarnings] = useState<string[]>([]);
+  const [dragErrors, setDragErrors] = useState<string[]>([]);
+  const [files, setFiles] = useState<Set<File>>(new Set());
+  const [preparePetitionsError, setPreparePetitionsError] = useState('');
   const history = useHistory();
-  const [createBatch] = useCreateBatchMutation();
-  const isMounted = useRef(false);
+  const [createBatch, { isLoading }] = useCreateBatchMutation();
+  const timer = useTimer();
 
-  useEffect(() => {
-    isMounted.current = true;
-    return () => {
-      isMounted.current = false;
-    };
-  });
-
-  const _mergeFileSets = (newFiles) => {
+  const _mergeFileSets = (newFiles: File[]) => {
     const mergedFiles = new Set(files);
     newFiles.forEach((file) => mergedFiles.add(file));
     return mergedFiles;
   };
 
-  const handleDrop = (drop) => {
+  const handleDrop = (drop: DropResult) => {
     setDragErrors(drop.errors);
     setDragWarnings(drop.warnings);
     if (files.size + drop.files.length > MAX_FILES) {
@@ -117,7 +95,7 @@ function HomePage() {
     if (!hasDups) setFiles(_mergeFileSets(drop.files));
   };
 
-  const handleRemoveFile = (file) => {
+  const handleRemoveFile = (file: File) => {
     // browser stores a "path" to the last file uploaded on the input.
     // It's necessary to "clear" the inputs value here, but not on drop--
     // the browser just replaces previous files in the case of a drop.
@@ -130,46 +108,32 @@ function HomePage() {
   };
 
   const handlePreparePetitions = async () => {
-    setShowModal(true);
-    let timer = null;
+    setPreparePetitionsError('');
     const filesFormData = new FormData();
     files.forEach((file) => filesFormData.append('files', file));
     filesFormData.append('parser_mode', JSON.stringify(parserMode ? 2 : 1));
-    timer = setTimeout(() => {
-      if (isMounted.current) {
-        setModalError(
-          'It is taking longer than expected to process the uploaded records. Please wait...'
-        );
-      }
+    timer.current = setTimeout(() => {
+      setPreparePetitionsError(
+        'It is taking longer than expected to process the uploaded records. Please wait...'
+      );
     }, LONG_WAIT_TIMEOUT * 1000);
 
     createBatch({ data: filesFormData })
       .unwrap()
       .then((data) => {
-        if (timer) {
-          clearTimeout(timer);
-        }
         history.push(`/generate/${data.id}`);
       })
       .catch(() => {
-        if (timer) {
-          clearTimeout(timer);
-        }
-        if (isMounted.current) {
-          setModalError('ERROR: Could not process the records.');
-        }
+        setPreparePetitionsError('Error: Could not process the record(s).');
       });
   };
 
   const experimentalParserMessage = (
     <ExperimentalMessage>
+      <p>CIPRS Record reader mode that can handle records with multi-line offense descriptions.</p>
       <p>
-        Experimental CIPRS Record Reader that can handle records with multi-line offense
-        descriptions.
-      </p>
-      <p>
-        Please try this mode if you are having issues with a CIPRS record that has a long offense
-        description.
+        If your generated petition has incorrect offense names, please try de-selecting this option
+        to see if the issue is fixed.
       </p>
     </ExperimentalMessage>
   );
@@ -183,7 +147,6 @@ function HomePage() {
               ref={fileInputRef}
               mimeTypes={ALLOWED_MIME_TYPES}
               maxFiles={MAX_FILES}
-              maxSize={MAX_FILE_SIZE}
               onDrop={handleDrop}
             >
               <DnDContent>
@@ -192,14 +155,14 @@ function HomePage() {
                   <p>up to {MAX_FILES} records</p>
                 </div>
                 <div>
-                  {dragWarnings && (
+                  {dragWarnings.length > 0 && (
                     <DragWarnings>
                       {dragWarnings.map((warning) => (
                         <p key={warning}>{warning}</p>
                       ))}
                     </DragWarnings>
                   )}
-                  {dragErrors && (
+                  {dragErrors.length > 0 && (
                     <DragErrors>
                       {dragErrors.map((error) => (
                         <p key={error}>{error}</p>
@@ -210,7 +173,7 @@ function HomePage() {
               </DnDContent>
             </DragNDrop>
             {files && files.size > 0 && (
-              <>
+              <div className="w-[350px] flex flex-col gap-4">
                 <ParserCheckboxWrapper>
                   (Beta) Multi-Line Reader Mode
                   <Tooltip tooltipContent={experimentalParserMessage}>
@@ -222,26 +185,29 @@ function HomePage() {
                     onChange={() => setParserMode((prev) => !prev)}
                   />
                 </ParserCheckboxWrapper>
-                <FilesList
-                  files={files}
-                  handleRemoveFile={handleRemoveFile}
-                  handlePreparePetitions={handlePreparePetitions}
-                />
-              </>
+                <Button
+                  className={cx('text-2xl p-1 flex gap-4 justify-center items-center', {
+                    'cursor-auto': isLoading,
+                  })}
+                  onClick={handlePreparePetitions}
+                  disabled={isLoading}
+                >
+                  <span>{isLoading ? 'Preparing...' : 'Prepare Petitions'}</span>
+                  <Spinner
+                    className={isLoading ? 'visible' : 'hidden'}
+                    size="xs"
+                    color="text-white"
+                  />
+                </Button>
+                {preparePetitionsError && (
+                  <p className="text-red text-lg text-bold">{preparePetitionsError}</p>
+                )}
+                <FilesList files={files} handleRemoveFile={handleRemoveFile} />
+              </div>
             )}
           </FilesInputContainer>
         </HomeContent>
       </HomePageStyled>
-      <ModalStyled
-        isVisible={showModal}
-        closeModal={() => {
-          setShowModal(false);
-          setModalError();
-        }}
-      >
-        <h2>Preparing petitions...</h2>
-        {modalError && <p>{modalError}</p>}
-      </ModalStyled>
     </>
   );
 }

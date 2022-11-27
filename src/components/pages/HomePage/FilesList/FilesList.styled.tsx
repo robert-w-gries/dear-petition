@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 
 export const FilesListWrapper = styled.div`
-  width: 350px;
   overflow-y: hidden;
   display: flex;
   flex-direction: column;
@@ -10,7 +9,6 @@ export const FilesListWrapper = styled.div`
 `;
 
 export const FilesListStyled = styled.ul`
-  margin-top: 1rem;
   & p {
     font-size: 18px;
   }

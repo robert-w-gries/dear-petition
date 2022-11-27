@@ -37,19 +37,19 @@ const PageBaseCentered = styled.div`
   width: 100%;
 `;
 
-function PageBase({ children, className, ...props }) {
+function PageBase({ children, className }: { children: React.ReactNode; className?: string }) {
   const history = useHistory();
   const { user } = useAuth();
   const dispatch = useDispatch();
   const [logout] = useLogoutMutation();
 
   return (
-    <PageBaseStyled {...props}>
+    <PageBaseStyled>
       <PageBaseCentered>
         <PageHeader>
           <LogoLink>
             <Link to="/">
-              <PageLogo src={DEAR_LOGO_HEADER_URL} alt="DEAR logo" />
+              <PageLogo src={DEAR_LOGO_HEADER_URL.toString()} alt="DEAR logo" />
             </Link>
           </LogoLink>
           <LinksGroup>
@@ -77,9 +77,8 @@ function PageBase({ children, className, ...props }) {
               </LinkWrapper>
             ) : null}
             <LogoutLink
-              to="/"
               onClick={() =>
-                logout().then(() => {
+                logout({}).then(() => {
                   dispatch(loggedOut());
                   history.replace('/login');
                 })

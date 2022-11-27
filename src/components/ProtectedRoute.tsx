@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import { Redirect, Route, RouteProps } from 'react-router-dom';
 
 import { useAuth } from '~/src/hooks/useAuth';
 import { useLazyCheckLoginQuery } from '~/src/service/api';
 import { loggedIn } from '~/src/slices/auth';
+import { useAppDispatch } from '~/src/store';
 
 function ProtectedRoute({
   children,
@@ -12,7 +12,7 @@ function ProtectedRoute({
   ...props
 }: { isAdminOnly?: boolean } & RouteProps) {
   const { user } = useAuth();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [checkLogin, { data, isFetching, isUninitialized }] = useLazyCheckLoginQuery();
   const isWaiting = isUninitialized || isFetching;
 
