@@ -1,4 +1,4 @@
-import { State } from '~/src/constants/US_STATES';
+import { State } from '/src/constants/US_STATES';
 
 export type Contact = {
   pk: number;

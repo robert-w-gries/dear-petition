@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import styled from 'styled-components';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import { CSRF_TOKEN_LS_KEY, USER } from '~/src/constants/authConstants';
-import useBrowserWarning from '~/src/hooks/useBrowserWarning';
-import GlobalStyle from '~/src/styles/GlobalStyle';
+import { CSRF_TOKEN_LS_KEY, USER } from '/src/constants/authConstants';
+import useBrowserWarning from '/src/hooks/useBrowserWarning';
+import GlobalStyle from '/src/styles/GlobalStyle';
 import ProtectedRoute from './ProtectedRoute';
 import { Button } from './elements/Button';
 import Modal from './elements/Modal/Modal';

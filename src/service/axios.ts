@@ -1,8 +1,8 @@
 import { BaseQueryFn } from '@reduxjs/toolkit/dist/query';
 import axios, { AxiosError, AxiosRequestConfig, Method } from 'axios';
-import { loggedOut } from '~/src/slices/auth';
-import { CSRF_COOKIE_NAME, CSRF_HEADER_KEY } from '~/src/constants/authConstants';
-import { isNullish, isObject } from '~/src/types';
+import { loggedOut } from '/src/slices/auth';
+import { CSRF_COOKIE_NAME, CSRF_HEADER_KEY } from '/src/constants/authConstants';
+import { isNullish, isObject } from '/src/types';
 
 const Axios = axios.create({
   baseURL: `/petition/api/`,

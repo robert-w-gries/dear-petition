@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { User } from '~/src/types/DataTypes';
+import { User } from '/src/types/DataTypes';
 
 type AuthState = {
   user: User | null;

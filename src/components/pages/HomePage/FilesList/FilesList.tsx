@@ -2,13 +2,13 @@ import { FilesListWrapper, FilesListStyled, FilesListItem } from './FilesList.st
 import { AnimatePresence } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import { CloseButton } from '~/src/components/elements/Button';
+import { CloseButton } from '/src/components/elements/Button';
 
 function FilesList({
   files,
   handleRemoveFile,
 }: {
-  files: File[];
+  files: Set<File>;
   handleRemoveFile: (file: File) => void;
 }) {
   return (

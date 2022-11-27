@@ -14,7 +14,7 @@ import { smallerThanTabletLandscape } from '../../styles/media';
 import { useAuth } from '../../hooks/useAuth';
 import { useLogoutMutation } from '../../service/api';
 import { loggedOut } from '../../slices/auth';
-import { DEAR_LOGO_HEADER_URL } from '~/src/constants/assetConstants';
+import { DEAR_LOGO_HEADER_URL } from '/src/constants/assetConstants';
 
 const LogoLink = styled(LinkWrapper)`
   border: none;

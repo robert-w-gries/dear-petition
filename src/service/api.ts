@@ -1,6 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { EmptyRequest, EmptyResponse, ListView, QuerysetParams } from '~/src/types/ApiTypes';
-import { ArrestingAgency, Attorney, CIPRSRecord, Petition, User } from '~/src/types/DataTypes';
+import { EmptyRequest, EmptyResponse, ListView, QuerysetParams } from '/src/types/ApiTypes';
+import { ArrestingAgency, Attorney, CIPRSRecord, Petition, User } from '/src/types/DataTypes';
 import { axiosBaseQuery } from './axios';
 
 export const api = createApi({

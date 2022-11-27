@@ -3,9 +3,9 @@ import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { useForm } from 'react-hook-form';
-import { useDeleteUserMutation, useModifyUserMutation } from '~/src/service/api';
-import { useAuth } from '~/src/hooks/useAuth';
-import { Button } from '~/src/components/elements/Button';
+import { useDeleteUserMutation, useModifyUserMutation } from '/src/service/api';
+import { useAuth } from '/src/hooks/useAuth';
+import { Button } from '/src/components/elements/Button';
 import {
   SortableHeader,
   Table,

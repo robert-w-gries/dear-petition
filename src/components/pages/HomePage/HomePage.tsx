@@ -5,12 +5,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { useHistory } from 'react-router-dom';
 
-import { Button } from '~/src/components/elements/Button/Button';
-import { Spinner } from '~/src/components/elements/Spinner';
-import { Tooltip } from '~/src/components/elements/Tooltip/Tooltip';
-import DragNDrop, { DropResult } from '~/src/components/elements/DragNDrop/DragNDrop';
-import { useTimer } from '~/src/hooks/useTimeout';
-import { useCreateBatchMutation } from '~/src/service/api';
+import { Button } from '/src/components/elements/Button/Button';
+import { Spinner } from '/src/components/elements/Spinner';
+import { Tooltip } from '/src/components/elements/Tooltip/Tooltip';
+import DragNDrop, { DropResult } from '/src/components/elements/DragNDrop/DragNDrop';
+import { useTimer } from '/src/hooks/useTimeout';
+import { useCreateBatchMutation } from '/src/service/api';
 
 import FilesList from './FilesList/FilesList';
 import {

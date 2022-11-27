@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import { Redirect, Route, RouteProps } from 'react-router-dom';
 
-import { useAuth } from '~/src/hooks/useAuth';
-import { useLazyCheckLoginQuery } from '~/src/service/api';
-import { loggedIn } from '~/src/slices/auth';
-import { useAppDispatch } from '~/src/store';
+import { useAuth } from '/src/hooks/useAuth';
+import { useLazyCheckLoginQuery } from '/src/service/api';
+import { loggedIn } from '/src/slices/auth';
+import { useAppDispatch } from '/src/store';
 
 function ProtectedRoute({
   children,

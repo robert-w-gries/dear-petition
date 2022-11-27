@@ -4,13 +4,13 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 
-import { Button } from '~/src/components/elements/Button';
-import { DEAR_LOGO_LOGIN_URL } from '~/src/constants/assetConstants';
-import { useAuth } from '~/src/hooks/useAuth';
-import { useLoginMutation } from '~/src/service/api';
-import { loggedIn } from '~/src/slices/auth';
-import { useAppDispatch } from '~/src/store';
-import { isObject } from '~/src/types';
+import { Button } from '/src/components/elements/Button';
+import { DEAR_LOGO_LOGIN_URL } from '/src/constants/assetConstants';
+import { useAuth } from '/src/hooks/useAuth';
+import { useLoginMutation } from '/src/service/api';
+import { loggedIn } from '/src/slices/auth';
+import { useAppDispatch } from '/src/store';
+import { isObject } from '/src/types';
 
 import { SplashLogo, FormErrors, InputStyled, PasswordInputStyled } from './LoginPage.styled';
 
