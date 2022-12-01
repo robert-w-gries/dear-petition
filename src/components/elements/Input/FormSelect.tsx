@@ -1,36 +1,37 @@
-import React from 'react';
 import { AnimatePresence } from 'framer-motion';
-import { useController } from 'react-hook-form';
+import { useController, UseControllerProps } from 'react-hook-form';
+import { Props as ActualSelectProps } from 'react-select';
+import { SelectWrapper, SelectStyled, InputErrors } from './Select.styled';
+import Select from './Select';
 
-import { SelectWrapper, SelectStyled, ActualSelectStyled, InputErrors } from './Select.styled';
+type FormSelectProps = {
+  className?: string;
+  disabled?: boolean;
+  errors?: string[];
+  label: string;
+  inputProps: UseControllerProps;
+};
 
-const FormSelect = ({ className, disabled, label, options, errors, inputProps }) => {
+const FormSelect = <Option,>({
+  label,
+  options,
+  inputProps,
+  className,
+  disabled,
+  errors = [],
+}: ActualSelectProps<Option, false> & FormSelectProps) => {
   const { field, fieldState } = useController(inputProps);
   const { error: inputError } = fieldState;
-  const error = inputError ? (
-    <p>Invalid value</p>
-  ) : (
-    errors?.map((errMsg, i) => <p key={`${i}${errMsg}`}>{errMsg}</p>)
-  );
+  const combinedErrors = inputError?.message ? [inputError.message, ...errors] : errors;
   return (
-    <SelectWrapper className={className}>
-      <SelectStyled>
-        {label}
-        <ActualSelectStyled {...field} isDisabled={disabled} options={options} />
-      </SelectStyled>
-      {error && (
-        <AnimatePresence>
-          <InputErrors
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: '-50' }}
-            positionTransition
-          >
-            {error}
-          </InputErrors>
-        </AnimatePresence>
-      )}
-    </SelectWrapper>
+    <Select
+      {...field}
+      className={className}
+      label={label}
+      isDisabled={disabled}
+      options={options}
+      errors={combinedErrors}
+    />
   );
 };
 

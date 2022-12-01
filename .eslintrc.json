@@ -1,35 +1,59 @@
 {
+  "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "ecmaVersion": 2020
+    "ecmaVersion": 2020,
+    "project": "./tsconfig.json",
+    "jsx": true,
+    "useJSXTextNode": true
+  },
+  "settings": {
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts", ".tsx"]
+    },
+    "import/resolver": {
+      "typescript": {
+        "alwaysTryTypes": true,
+        "project": "./tsconfig.json"
+      }
+    }
   },
   "env": {
     "browser": true
   },
   "overrides": [
     {
-      "files": [
-        "**/*.test.js",
-        "**/*.test.jsx"
-      ],
+      "files": ["**/*.test.js", "**/*.test.jsx"],
       "env": {
         "jest": true
       }
     }
   ],
-  "extends": ["airbnb", "prettier"],
-  "plugins": ["prettier"],
+  "ignorePatterns": ["tailwind.config.js"],
+  "plugins": ["@typescript-eslint", "import", "prettier"],
+  "extends": [
+    "airbnb",
+    "airbnb-typescript",
+    "prettier",
+    "plugin:react/jsx-runtime",
+    "plugin:react-hooks/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking"
+  ],
   "rules": {
     "prettier/prettier": ["error"],
+    "react/react-in-jsx-scope": "off",
+    "react/require-default-props": "off",
     "react/jsx-filename-extension": [
       1,
       {
-        "extensions": [".js", ".jsx"]
+        "extensions": [".jsx", ".tsx"]
       }
     ],
     "prefer-template": "off",
     "react/prop-types": "off",
     "no-param-reassign": [
-      "error", {
+      "error",
+      {
         "props": true,
         "ignorePropertyModificationsFor": ["state"]
       }
@@ -48,10 +72,14 @@
     "import/no-cycle": "off",
     "import/order": "off",
     "import/prefer-default-export": "off",
-    "import/no-extraneous-dependencies": ["error", {
-      "devDependencies": ["src/setupTests.js", "**/*.test.js", "**/*.test.jsx"]
-    }],
-    "jsx-a11y/label-has-associated-control": ["error", { "assert": "either" } ],
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "devDependencies": ["src/setupTests.js", "**/*.test.js", "**/*.test.jsx"]
+      }
+    ],
+    "import/no-absolute-path": "off",
+    "jsx-a11y/label-has-associated-control": ["error", { "assert": "either" }],
     "camelcase": "warn",
     "consistent-return": "warn",
     "import/no-named-as-default": 0,

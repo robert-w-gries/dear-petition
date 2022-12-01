@@ -16,6 +16,7 @@ import {
 } from '../../elements/Table';
 import Modal from '../../elements/Modal/Modal';
 import FormInput from '../../elements/Input/FormInput';
+import { User } from '/src/types/DataTypes';
 
 const PassthroughForm = styled.form`
   display: contents;
@@ -87,13 +88,14 @@ const TextboxInput = styled(FormInput)`
   }
 `;
 
-const formatLastLogin = (lastLogin) => (lastLogin ? new Date(lastLogin).toLocaleDateString() : '');
+const formatLastLogin = (lastLogin: string) =>
+  lastLogin ? new Date(lastLogin).toLocaleDateString() : '';
 
-const DisplayCells = ({ user, onStartEdit }) => {
+const DisplayCells = ({ user, onStartEdit }: { user: User; onStartEdit: () => void }) => {
   const { user: myUser } = useAuth();
   const [isModalVisible, setModalVisible] = useState(false);
   const [triggerDelete] = useDeleteUserMutation();
-  const disabledDelete = myUser.pk === user.pk;
+  const disabledDelete = myUser?.pk === user.pk;
   return (
     <>
       <TableCell>{user.username}</TableCell>

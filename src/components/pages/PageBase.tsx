@@ -1,4 +1,3 @@
-import { useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import {
@@ -9,12 +8,13 @@ import {
   PageLogo,
   PageContentWrapper,
 } from './PageBase.styled';
-import { smallerThanTabletLandscape } from '../../styles/media';
+import { smallerThanTabletLandscape } from '/src/styles/media';
 
-import { useAuth } from '../../hooks/useAuth';
-import { useLogoutMutation } from '../../service/api';
-import { loggedOut } from '../../slices/auth';
+import { useAuth } from '/src/hooks/useAuth';
+import { useLogoutMutation } from '/src/service/api';
+import { loggedOut } from '/src/slices/auth';
 import { DEAR_LOGO_HEADER_URL } from '/src/constants/assetConstants';
+import { useAppDispatch } from '/src/store';
 
 const LogoLink = styled(LinkWrapper)`
   border: none;
@@ -40,7 +40,7 @@ const PageBaseCentered = styled.div`
 function PageBase({ children, className }: { children: React.ReactNode; className?: string }) {
   const history = useHistory();
   const { user } = useAuth();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [logout] = useLogoutMutation();
 
   return (

@@ -1,19 +1,35 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { SelectWrapper, SelectStyled, ActualSelectStyled, InputErrors } from './Select.styled';
+import { SelectWrapper, SelectStyled, InputErrors } from './Select.styled';
 import { AnimatePresence } from 'framer-motion';
+import ActualSelect, { Props as ActualSelectProps } from 'react-select';
 
-function Select({ value, onChange, label, errors, options, disabled, className }) {
+type SelectProps = {
+  label: string;
+  className?: string;
+  disabled?: boolean;
+  errors?: string[];
+};
+
+function Select<Option>({
+  value,
+  onChange,
+  label,
+  options,
+  className = '',
+  disabled = false,
+  errors = [],
+}: ActualSelectProps<Option, false> & SelectProps) {
   return (
     <SelectWrapper className={className}>
       <SelectStyled>
         {label}
-        <ActualSelectStyled
-          value={value}
-          options={options}
-          onChange={onChange}
-          isDisabled={disabled}
-        />
+        <div className="min-w-[150px] text-[1.5rem] [&>div]:border [&>div]:border-gray [&>div]:rounded-md [&>div>*]:border-0">
+          <ActualSelect<Option>
+            value={value}
+            options={options}
+            onChange={onChange}
+            isDisabled={disabled}
+          />
+        </div>
       </SelectStyled>
       <AnimatePresence>
         <InputErrors
@@ -28,24 +44,5 @@ function Select({ value, onChange, label, errors, options, disabled, className }
     </SelectWrapper>
   );
 }
-
-Select.propTypes = {
-  value: PropTypes.shape({
-    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    label: PropTypes.string,
-  }).isRequired,
-  onChange: PropTypes.func.isRequired,
-  label: PropTypes.string,
-  options: PropTypes.arrayOf(
-    PropTypes.shape({
-      value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-      label: PropTypes.string,
-    })
-  ).isRequired,
-};
-
-Select.defaultProps = {
-  label: '',
-};
 
 export default Select;

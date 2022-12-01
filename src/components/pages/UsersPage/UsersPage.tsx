@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import cx from 'classnames';
 import styled from 'styled-components';
+import PageBase from '/src/components/pages/PageBase';
+import useDebounce from '/src/hooks/useDebounce';
+import { useUsersQuery } from '/src/service/api';
+import Select from '/src/components/elements/Input/Select';
+import { colorGrey } from '/src/styles/colors';
 import UsersTable from './UsersTable';
-import PageBase from '../PageBase';
-import useDebounce from '../../../hooks/useDebounce';
-import { useUsersQuery } from '../../../service/api';
-import Select from '../../elements/Input/Select';
 import UsersActions from './UsersActions';
-import { colorGrey } from '../../../styles/colors';
 
 const UsersSection = styled.div`
   &:not(:last-child) {
@@ -59,9 +59,9 @@ const limitSizes = [
   { label: '10', value: 10 },
   { label: '25', value: 25 },
   { label: '50', value: 50 },
-];
+] as const;
 
-const calculatePageIndices = (current, numPages) => {
+const calculatePageIndices = (current: number, numPages: number) => {
   let startIndex = current - VISIBLE_OFFSET;
   let endIndex = current + VISIBLE_OFFSET;
   if (current < MAX_PAGES - 3) {
@@ -76,12 +76,12 @@ const calculatePageIndices = (current, numPages) => {
 };
 
 const UsersPage = () => {
-  const [limit, setLimit] = useState(limitSizes[0]);
+  const [limit, setLimit] = useState<typeof limitSizes[number]>(limitSizes[0]);
   const [offset, setOffset] = useState(0);
   const [ordering, setOrdering] = useState('username');
   const [search, setSearch] = useState('');
   const [formValue, setFormValue] = useState('');
-  const debounceSearch = useDebounce((value) => setSearch(value), { timeout: 400 });
+  const debounceSearch = useDebounce((value) => setSearch(value as string), { timeout: 2000 });
   const { data } = useUsersQuery({ params: { limit: limit.value, offset, ordering, search } });
 
   const numUsers = data?.count ?? 0;
@@ -110,7 +110,7 @@ const UsersPage = () => {
               options={limitSizes}
               onChange={(selectObj) => {
                 setOffset(0);
-                setLimit(selectObj);
+                setLimit(selectObj ?? limitSizes[0]);
               }}
             />
             <SearchRow>

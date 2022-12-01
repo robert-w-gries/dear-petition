@@ -5,12 +5,13 @@ import { useEffect, useRef } from 'react';
  */
 export const useTimer = () => {
   const timer = useRef<ReturnType<typeof setTimeout>>();
-  useEffect(() => {
-    return () => {
+  useEffect(
+    () => () => {
       if (timer.current) {
         clearTimeout(timer.current);
       }
-    };
-  }, []);
+    },
+    []
+  );
   return timer;
 };
