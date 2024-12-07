@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useRecalculatePetitionsMutation } from '../../service/api';
-import StyledDialog from '../../components/elements/Modal/Dialog';
+import { Dialog } from '../../components/elements/Modal/Dialog';
 import OffenseTable from './OffenseTable';
 import { Button } from '../../components/elements/Button';
 import { DISABLED, POSITIVE } from '../../components/elements/Button/Button';
 
 const OffenseTableModal = ({ isOpen, onClose, petitionId, petition }) => (
-  <StyledDialog isOpen={isOpen} onClose={() => onClose()}>
+  <Dialog isOpen={isOpen} onClose={() => onClose()}>
     <div className="w-[900px] h-[500px] p-10 flex flex-col gap-8">
       <ModalContent petitionId={petitionId} petition={petition} onClose={onClose} />
     </div>
-  </StyledDialog>
+  </Dialog>
 );
 
 const ModalContent = ({ petitionId, petition, onClose }) => {

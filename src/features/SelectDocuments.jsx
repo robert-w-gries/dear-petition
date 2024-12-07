@@ -1,4 +1,4 @@
-import StyledDialog from '../components/elements/Modal/Dialog';
+import { Dialog } from '../components/elements/Modal/Dialog';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '../components/elements/Table';
 import Button from '../components/elements/Button';
 import { POSITIVE } from '../components/elements/Button/Button';
@@ -11,7 +11,7 @@ export const SelectDocumentsModal = ({
   documents,
   selectedDocuments,
 }) => (
-  <StyledDialog isOpen={isOpen} onClose={() => onClose()}>
+  <Dialog isOpen={isOpen} onClose={() => onClose()}>
     <div className="w-[500px] max-h-[500px] p-10 flex flex-col gap-8">
       <h3>Select Documents for Download</h3>
       <p className="text-[1.6rem]">Please select or de-select documents here for download.</p>
@@ -28,7 +28,7 @@ export const SelectDocumentsModal = ({
         </Button>
       </div>
     </div>
-  </StyledDialog>
+  </Dialog>
 );
 
 const SelectDocuments = ({ onAddDocument, onRemoveDocument, documents, selectedDocuments }) => (

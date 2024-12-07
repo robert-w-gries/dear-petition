@@ -1,8 +1,9 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import { Tab } from '@headlessui/react';
+import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react';
 import cx from 'classnames';
 import { Link } from 'react-router-dom';
+import { Fragment } from 'react';
 import PageBase from './PageBase';
 import { useGetUserBatchesQuery } from '../../service/api';
 import useAuth from '../../hooks/useAuth';
@@ -30,8 +31,8 @@ export const Dashboard = () => {
           First time creating an expunction petition form?
           <Link to="/help">See the Help page for more information.</Link>
         </span>
-        <Tab.Group defaultIndex={hasExistingPetitions ? 2 : 0}>
-          <Tab.List className="flex">
+        <TabGroup defaultIndex={hasExistingPetitions ? 2 : 0} as={Fragment}>
+          <TabList className="flex">
             <div className="flex bg-blue-primary p-2 gap-1 rounded-md text-white font-bold">
               <Tab as="div">
                 {({ selected }) => (
@@ -73,19 +74,19 @@ export const Dashboard = () => {
                 )}
               </Tab>
             </div>
-          </Tab.List>
-          <Tab.Panels as="div">
-            <Tab.Panel>
+          </TabList>
+          <TabPanels as="div">
+            <TabPanel>
               <NewPetition />
-            </Tab.Panel>
-            <Tab.Panel>
+            </TabPanel>
+            <TabPanel>
               <NewPetitionFromRecordSpreadsheet />
-            </Tab.Panel>
-            <Tab.Panel>
+            </TabPanel>
+            <TabPanel>
               <ExistingPetitions />
-            </Tab.Panel>
-          </Tab.Panels>
-        </Tab.Group>
+            </TabPanel>
+          </TabPanels>
+        </TabGroup>
       </div>
     </PageBase>
   );

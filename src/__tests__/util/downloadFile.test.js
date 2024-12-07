@@ -7,6 +7,7 @@ describe('File Download Utility Functions', () => {
     // Mock Blob and createObjectURL
     window.Blob = vi.fn();
     window.URL.createObjectURL = vi.fn(() => 'test-object-url');
+    window.URL.revokeObjectURL = vi.fn();
 
     const pdfData = 'Mock PDF Data';
     const pdfFilename = 'sample.pdf';

@@ -1,5 +1,6 @@
+import { waitFor } from '@testing-library/dom';
 import App from '../components/App';
-import { render, waitFor } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { test } from 'vitest';
 import store from '../store';
 import { Provider } from 'react-redux';

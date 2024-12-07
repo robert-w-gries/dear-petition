@@ -1,6 +1,6 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { Button } from './Button';
-import StyledDialog from '../Modal/Dialog';
+import { Dialog } from '../Modal/Dialog';
 import useOnClickOutside from '../../../hooks/useOnClickOutside';
 
 const ModalContext = React.createContext();
@@ -35,9 +35,9 @@ export const ModalButton = ({ children, className, colorClass, title, allowClose
     <Button ref={buttonElement} className={className} colorClass={colorClass ?? 'neutral'} onClick={handleClick}>
       {title}
       <ModalContext.Provider value={{ closeModal }}>
-        <StyledDialog isOpen={showModal} onClose={allowCloseOnEscape ? closeModal : undefined}>
+        <Dialog isOpen={showModal} onClose={allowCloseOnEscape ? closeModal : undefined}>
           <div ref={modalElement}>{children}</div>
-        </StyledDialog>
+        </Dialog>
       </ModalContext.Provider>
     </Button>
   );

@@ -15,7 +15,7 @@ import {
 import { Button } from '../../components/elements/Button';
 import FormInput from '../../components/elements/Input/FormInput';
 import FormTextArea from '../../components/elements/Input/FormTextArea';
-import StyledDialog from '../../components/elements/Modal/Dialog';
+import { Dialog } from '../../components/elements/Modal/Dialog';
 
 const getFormattedAddress = (address1, address2) => (address2 ? `${address1}\n${address2}` : address1);
 
@@ -211,7 +211,7 @@ const AgenciesTable = ({ agencies, sortBy, onSortBy }) => {
               <Button type="button" colorClass="caution" onClick={() => setDeleteModalId(agencyData.pk)}>
                 Delete
               </Button>
-              <StyledDialog isOpen={deleteModalId === agencyData.pk} onClose={() => onCloseDeleteModal()}>
+              <Dialog isOpen={deleteModalId === agencyData.pk} onClose={() => onCloseDeleteModal()}>
                 <div className="max-w-[600px] p-24 flex flex-col gap-8">
                   <p className="self-center text-3xl font-bold">WARNING</p>
                   <p className="text-[1.6rem] flex flex-wrap gap-x-2 gap-y-4">
@@ -227,7 +227,7 @@ const AgenciesTable = ({ agencies, sortBy, onSortBy }) => {
                     </Button>
                   </div>
                 </div>
-              </StyledDialog>
+              </Dialog>
             </TableCell>
           </EditableRow>
         ))}

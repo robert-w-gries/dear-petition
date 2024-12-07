@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import cx from 'classnames';
-import StyledDialog from '../components/elements/Modal/Dialog';
+import { Dialog } from '../components/elements/Modal/Dialog';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '../components/elements/Table';
 import Button from '../components/elements/Button';
 import { POSITIVE } from '../components/elements/Button/Button';
@@ -12,7 +12,7 @@ import { Tooltip } from '../components/elements/Tooltip/Tooltip';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 
 export const DownloadDocumentsModal = ({ isOpen, onClose, petitions }) => (
-  <StyledDialog isOpen={isOpen} onClose={() => onClose()}>
+  <Dialog isOpen={isOpen} onClose={() => onClose()}>
     <div className="w-[600px] max-h-[500px] p-10 flex flex-col gap-8">
       <h3>Select Documents for Download</h3>
       <p className="text-[1.6rem]">Please select or de-select documents here for download.</p>
@@ -24,7 +24,7 @@ export const DownloadDocumentsModal = ({ isOpen, onClose, petitions }) => (
         </Button>
       </div>
     </div>
-  </StyledDialog>
+  </Dialog>
 );
 
 const handleDownload = async (petition) => {

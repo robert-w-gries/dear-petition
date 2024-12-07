@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button } from '../components/elements/Button';
-import StyledDialog from '../components/elements/Modal/Dialog';
+import { Dialog } from '../components/elements/Modal/Dialog';
 import AutocompleteInput from '../components/elements/Input/AutocompleteInput';
 import { useLazySearchAgenciesQuery, useAssignAgenciesToDocumentsMutation } from '../service/api';
 import { Spinner } from '../components/elements/Spinner';
@@ -36,9 +36,9 @@ export const SelectAgenciesModal = ({ isOpen, onClose, petitionId, petitionData 
   );
 
   return (
-    <StyledDialog isOpen={isOpen} onClose={() => onClose()}>
+    <Dialog isOpen={isOpen} onClose={() => onClose()}>
       <div className="h-auto flex justify-center">{content}</div>
-    </StyledDialog>
+    </Dialog>
   );
 };
 

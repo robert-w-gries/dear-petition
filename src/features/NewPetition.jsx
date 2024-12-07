@@ -6,7 +6,7 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { Button, CloseButton } from '../components/elements/Button';
 import DragNDrop from '../components/elements/DragNDrop/DragNDrop';
 import { useCreateBatchMutation } from '../service/api';
-import CenteredDialog from '../components/elements/Modal/Dialog';
+import { Dialog } from '../components/elements/Modal/Dialog';
 import { Spinner } from '../components/elements/Spinner';
 import { POSITIVE } from '../components/elements/Button/Button';
 import useAuth from '../hooks/useAuth';
@@ -197,7 +197,7 @@ export const NewPetition = () => {
       </div>
       <RecordUpload />
       <iframe id="printIframe" title="Print" className="h-0 w-0 absolute" />
-      <CenteredDialog isOpen={showEmailModal} onClose={() => setShowEmailModal(false)}>
+      <Dialog isOpen={showEmailModal} onClose={() => setShowEmailModal(false)}>
         <div id="printableInstructions" className="flex flex-col px-8 py-16 w-[800px]">
           <h3 className="">Upload CIPRS Record via Court Email System</h3>
           <div className="mt-6 [&_li]:text-[17px]">
@@ -238,7 +238,7 @@ export const NewPetition = () => {
             </div>
           </div>
         </div>
-      </CenteredDialog>
+      </Dialog>
     </div>
   );
 };
