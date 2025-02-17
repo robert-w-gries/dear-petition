@@ -99,7 +99,7 @@ const RecordUpload = () => {
       });
   };
 
-  const hasFiles = files?.size > 0 ?? false;
+  const hasFiles = files.size > 0;
   return (
     <>
       <DragNDrop

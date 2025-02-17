@@ -156,10 +156,13 @@ const InputCells = ({ user, onStopEdit }) => {
     <PassthroughTD>
       <PassthroughForm onSubmit={handleSubmit(onSubmit)}>
         <TableCell>
-          <TextboxInput inputProps={{ control, name: 'username' }} errors={[error?.data?.username] ?? []} />
+          <TextboxInput
+            inputProps={{ control, name: 'username' }}
+            errors={error?.data?.username ? [error.data.username] : []}
+          />
         </TableCell>
         <TableCell>
-          <TextboxInput inputProps={{ control, name: 'email' }} errors={[error?.data?.email] ?? []} />
+          <TextboxInput inputProps={{ control, name: 'email' }} errors={error?.data?.email ? [error.data.email] : []} />
         </TableCell>
         <TableCell>
           <input type="checkbox" disabled={myUser.pk === user.pk} {...register('is_admin')} />

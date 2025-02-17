@@ -10,7 +10,6 @@ import ezExpungeLogoWithLancText from '../../../assets/img/ez_expunge_logo_with_
 // Routing
 import { useHistory } from 'react-router-dom';
 
-import { AnimatePresence } from 'framer-motion';
 import useAuth from '../../../hooks/useAuth';
 import { loggedIn } from '../../../slices/auth';
 import { useLoginMutation } from '../../../service/api';
@@ -82,19 +81,11 @@ function Login() {
           />
           <a href="password_reset/">Forgot Password?</a>
         </div>
-        <AnimatePresence>
-          {errors.detail && (
-            <FormErrors
-              className="mb-0"
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: '-50' }}
-              positionTransition
-            >
-              <p>{errors.detail}</p>
-            </FormErrors>
-          )}
-        </AnimatePresence>
+        {errors.detail && (
+          <FormErrors className="mb-0">
+            <p>{errors.detail}</p>
+          </FormErrors>
+        )}
         <LoginButton type="submit">Log In</LoginButton>
       </form>
     </main>
