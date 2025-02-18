@@ -1,5 +1,5 @@
 import React from 'react';
-import { createRoot } from 'react-dom/client';
+import { Container, createRoot } from 'react-dom/client';
 import './index.css';
 import App from './components/App';
 import store from './store';
@@ -13,6 +13,6 @@ const renderElement = (
   </Provider>
 );
 
-const container = document.getElementById('root');
+const container = document.getElementById('root') as Container;
 const root = createRoot(container);
 root.render(renderElement);

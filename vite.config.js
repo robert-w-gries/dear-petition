@@ -1,8 +1,8 @@
 /// <reference types="vitest" />
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import eslint from 'vite-plugin-eslint';
 import http from 'http';
+import viteTsconfigPaths from 'vite-tsconfig-paths';
 
 // docker-compose will avoid using the fallback due to always having one of OVERRIDE_API_PROXY or API_PROXY set
 const FALLBACK_PROXY = 'http://127.0.0.1:8000';
@@ -27,7 +27,7 @@ export default defineConfig(() => ({
     proxy: PROXIES,
   },
   assetsInclude: '**/*.md',
-  plugins: [react(), eslint()],
+  plugins: [react(), viteTsconfigPaths()],
   test: {
     globals: true,
     environment: 'jsdom',
