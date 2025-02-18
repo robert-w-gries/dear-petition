@@ -3,8 +3,6 @@
 !.env
 !.pylintrc
 !.postcssrc
-!.eslintrc.json
-!.eslintignore
 **/*.DS_Store
 **/__pycache__
 **/*.pyc

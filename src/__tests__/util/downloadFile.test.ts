@@ -4,9 +4,12 @@ import { downloadPdf } from '../../util/downloadFile'; // Import your utility fu
 
 describe('File Download Utility Functions', () => {
   it('should download a PDF file', () => {
+    vi.useFakeTimers();
+
     // Mock Blob and createObjectURL
     window.Blob = vi.fn();
     window.URL.createObjectURL = vi.fn(() => 'test-object-url');
+    window.URL.revokeObjectURL = vi.fn();
 
     const pdfData = 'Mock PDF Data';
     const pdfFilename = 'sample.pdf';
@@ -33,6 +36,9 @@ describe('File Download Utility Functions', () => {
     expect(createElementMock).toHaveBeenCalledWith('a');
     // expect(createElementMock.download).toBe(pdfFilename);
     // expect(createElementMock.href).toBe('test-object-url');
+
+    vi.runAllTimers();
+    expect(window.URL.revokeObjectURL).toHaveBeenCalledWith('test-object-url');
 
     createElementMock.mockRestore();
   });

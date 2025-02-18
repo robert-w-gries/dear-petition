@@ -1,7 +1,7 @@
 import { vi } from 'vitest';
 import { getErrorList, hasValidationsErrors } from '../../util/errors';
 
-describe('Utils: errors.js', () => {
+describe('Utils: errors', () => {
   afterEach(() => {
     vi.resetAllMocks();
   });

@@ -4,7 +4,7 @@ WORKDIR /code
 ENV PATH /code/node_modules/.bin:$PATH
 COPY package.json package-lock.json /code/
 RUN npm install --silent
-COPY index.html favicon.ico vite.config.js tailwind.config.js .postcssrc .eslintrc.json .eslintignore /code/
+COPY index.html favicon.ico vite.config.js tailwind.config.js .postcssrc eslint.config.js /code/
 COPY ./src /code/src/
 
 WORKDIR /code/

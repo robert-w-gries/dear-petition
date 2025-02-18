@@ -2,7 +2,7 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import { axiosBaseQuery } from './axios';
 
 export const api = createApi({
-  // TODO: use baseUrl here instead of in axios.js
+  // TODO: use baseUrl here instead of in axios
   baseQuery: axiosBaseQuery(),
   tagTypes: ['ContactList', 'Batch', 'Petition', 'User'],
   endpoints: (builder) => ({

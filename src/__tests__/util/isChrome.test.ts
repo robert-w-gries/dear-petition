@@ -1,5 +1,5 @@
 import { vi } from 'vitest';
-import isChrome from '../../util/isChrome.js';
+import isChrome from '../../util/isChrome';
 
 describe('isChrome test', () => {
   beforeEach(() => {
