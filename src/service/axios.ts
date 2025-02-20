@@ -1,6 +1,7 @@
-import axios from 'axios';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse, Method } from 'axios';
 import { loggedOut } from '../slices/auth';
 import { CSRF_COOKIE_NAME, CSRF_HEADER_KEY } from '../constants/authConstants';
+import { BaseQueryApi, QueryReturnValue } from '@reduxjs/toolkit/query';
 
 const Axios = axios.create({
   baseURL: `/petition/api/`,
@@ -12,25 +13,43 @@ const Axios = axios.create({
 
 export default Axios;
 
+export type AxiosBaseQueryArgs = AxiosRequestConfig & { url: string; method: Method };
+export type AxiosBaseQueryReturnValue = QueryReturnValue<
+  unknown,
+  Pick<AxiosResponse<unknown>, 'status' | 'data'>,
+  { request: AxiosBaseQueryArgs; response: AxiosResponse }
+>;
+
+const isAxiosError = (data: unknown): data is AxiosError<unknown> =>
+  typeof data === 'object' && !!data && 'response' in data;
+
 export const axiosBaseQuery =
-  (initialApi) =>
-  async ({ url, method, timeout, data, params, responseType }, api) => {
+  (initialApi?: BaseQueryApi) =>
+  async (
+    { url, method, timeout, data, params, responseType }: AxiosBaseQueryArgs,
+    api: BaseQueryApi,
+  ): Promise<AxiosBaseQueryReturnValue> => {
     const currentApi = api ?? initialApi;
     if (!currentApi) {
       throw new Error('Must provide api instance');
     }
-    const requestConfig = { url, method, data, params, responseType };
+    const requestConfig: AxiosBaseQueryArgs = { url, method, data, params, responseType, timeout: undefined };
     if (timeout) {
       requestConfig.timeout = timeout;
     }
     try {
       const result = await Axios(requestConfig);
       return { data: result.data, meta: { request: requestConfig, response: result } };
-    } catch (axiosError) {
+    } catch (error: unknown) {
+      // Early return if we get unknown error or error is not related to authentication
+      if (!isAxiosError(error) || !error.response) {
+        throw error;
+      }
+
       const isLoginAttempt = url === 'token/' && method.localeCompare('post', 'en', { sensitivity: 'base' }) === 0;
-      if (axiosError?.response?.status !== 401 || isLoginAttempt) {
+      if (error?.response.status !== 401 || isLoginAttempt) {
         return {
-          error: { status: axiosError.response?.status, data: axiosError.response?.data },
+          error: { status: error.response.status, data: error.response.data },
         };
       }
     }
@@ -40,17 +59,23 @@ export const axiosBaseQuery =
       await Axios({ url: 'token/refresh/', method: 'post' });
       const result = await Axios(requestConfig); // retry
       return { data: result.data, meta: { request: requestConfig, response: result } };
-    } catch (axiosError) {
+    } catch (error) {
       currentApi.dispatch(loggedOut());
+      if (!isAxiosError(error) || !error.response) {
+        throw error;
+      }
       return {
-        error: { status: axiosError.response?.status, data: axiosError.response?.data },
+        error: { status: error.response?.status, data: error.response?.data },
       };
     }
   };
 
-export const manualAxiosRequest = async ({ url, method, timeout, data, params, responseType }) => {
+export const manualAxiosRequest = async ({ url, method, timeout, data, params, responseType }: AxiosBaseQueryArgs) => {
   const store = (await import('../store')).default;
-  const result = await axiosBaseQuery()({ url, method, timeout, data, params, responseType }, store);
+  const result = await axiosBaseQuery()(
+    { url, method, timeout, data, params, responseType },
+    store as unknown as BaseQueryApi, // TODO: how do we get the actual api here
+  );
   if ('error' in result) {
     throw result.error;
   }

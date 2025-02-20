@@ -1,10 +1,11 @@
-import { createApi } from '@reduxjs/toolkit/query/react';
+import { createApi, TagDescription } from '@reduxjs/toolkit/query/react';
 import { axiosBaseQuery } from './axios';
+import { Batch, Client } from './types';
 
 export const api = createApi({
   // TODO: use baseUrl here instead of in axios
   baseQuery: axiosBaseQuery(),
-  tagTypes: ['ContactList', 'Batch', 'Petition', 'User'],
+  tagTypes: ['ContactList', 'ContactFilterOptions', 'Batch', 'Petition', 'User'],
   endpoints: (builder) => ({
     agencies: builder.query({
       query: ({ queryString }) => ({
@@ -68,7 +69,7 @@ export const api = createApi({
     createClient: builder.mutation({
       query: ({ data }) => ({ url: `client/`, method: 'post', data }),
     }),
-    updateClient: builder.mutation({
+    updateClient: builder.mutation<Client, { id: number; data: Partial<Client> }>({
       query: ({ id, data }) => ({ url: `client/${id}/`, method: 'put', data }),
       invalidatesTags: (result) => {
         if (!result) {
@@ -77,7 +78,7 @@ export const api = createApi({
         const tags = [
           { type: 'ContactList', id: result.category },
           { type: 'ContactFilterOptions', id: result.category },
-        ];
+        ] as TagDescription<'ContactList' | 'ContactFilterOptions' | 'Batch'>[];
         console.log(result);
         result?.batches?.forEach((batchId) => tags.push({ type: 'Batch', id: batchId }));
         return tags;
@@ -123,21 +124,21 @@ export const api = createApi({
       query: ({ id }) => ({ url: `batch/${id}/`, method: 'delete' }),
       invalidatesTags: ['Batch'],
     }),
-    updateBatch: builder.mutation({
+    updateBatch: builder.mutation<Batch, { id: number; data: unknown }>({
       query: ({ id, data }) => ({ url: `batch/${id}/`, method: 'put', data }),
       invalidatesTags: (result, _err, { id }) => {
-        const tags = [{ type: 'Batch', id }];
+        const tags = [{ type: 'Batch', id }] as TagDescription<'Petition' | 'Batch'>[];
         result?.petitions?.forEach(({ pk }) => tags.push({ type: 'Petition', id: pk }));
         return tags;
       },
     }),
-    getBatch: builder.query({
+    getBatch: builder.query<Batch, { id: number }>({
       query: ({ id }) => ({ url: `batch/${id}/`, method: 'get', timeout: 30 * 1000 }),
       providesTags: (result, _err, { id }) => {
-        const tags = [{ type: 'Batch', id }];
+        const tags = [{ type: 'Batch', id }] as TagDescription<'Batch' | 'Petition'>[];
         // TODO: Add petitions from this result to redux store
         if (result?.petitions) {
-          tags.concat(result.petitions.map(({ pk }) => [{ type: 'Petition', id: pk }]));
+          tags.concat(result.petitions.map(({ pk }) => ({ type: 'Petition', id: pk })));
         }
         return tags;
       },
@@ -211,12 +212,11 @@ export const api = createApi({
         if (!result) {
           return [];
         }
-        const tags = [
+        return [
           { type: 'ContactList', id: result.category },
           { type: 'ContactFilterOptions', id: result.category },
           { type: 'Batch', id: result.batch_id },
         ];
-        return tags;
       },
     }),
   }),
