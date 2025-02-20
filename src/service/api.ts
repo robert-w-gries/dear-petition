@@ -1,75 +1,65 @@
 import { createApi, TagDescription } from '@reduxjs/toolkit/query/react';
 import { axiosBaseQuery } from './axios';
-import { Batch, Client } from './types';
+import {
+  Agency,
+  Attorney,
+  Batch,
+  Category,
+  Client,
+  Id,
+  ImportResults,
+  PaginatedResults,
+  Petition,
+  User,
+} from './types';
+import { Method } from 'axios';
+
+const TAG_TYPES = ['ContactList', 'ContactFilterOptions', 'Batch', 'Petition', 'User'] as const;
+const invalidatesTagsWithResult = (tags: TagDescription<(typeof TAG_TYPES)[number]>[]) => (result?: unknown) =>
+  result ? tags : [];
 
 export const api = createApi({
   // TODO: use baseUrl here instead of in axios
   baseQuery: axiosBaseQuery(),
-  tagTypes: ['ContactList', 'ContactFilterOptions', 'Batch', 'Petition', 'User'],
+  tagTypes: TAG_TYPES,
   endpoints: (builder) => ({
-    agencies: builder.query({
+    agencies: builder.query<Agency[], { queryString: string }>({
       query: ({ queryString }) => ({
         url: `agency/?${queryString}`,
         method: 'get',
       }),
       providesTags: [{ type: 'ContactList', id: 'agency' }],
     }),
-    createAgency: builder.mutation({
+    createAgency: builder.mutation<Agency, { data: Omit<Agency, 'pk'> }>({
       query: ({ data }) => ({ url: `agency/`, method: 'post', data }),
-      invalidatesTags: (result) =>
-        result
-          ? [
-              { type: 'ContactList', id: 'agency' },
-              { type: 'ContactFilterOptions', id: 'agency' },
-            ]
-          : [],
+      invalidatesTags: invalidatesTagsWithResult([
+        { type: 'ContactList', id: 'agency' },
+        { type: 'ContactFilterOptions', id: 'agency' },
+      ]),
     }),
-    updateAgency: builder.mutation({
+    updateAgency: builder.mutation<Agency, { id: number; data: Omit<Agency, 'pk'> }>({
       query: ({ id, data }) => ({ url: `agency/${id}/`, method: 'put', data }),
-      invalidatesTags: (result) =>
-        result
-          ? [
-              { type: 'ContactList', id: 'agency' },
-              { type: 'ContactFilterOptions', id: 'agency' },
-            ]
-          : [],
+      invalidatesTags: invalidatesTagsWithResult([
+        { type: 'ContactList', id: 'agency' },
+        { type: 'ContactFilterOptions', id: 'agency' },
+      ]),
     }),
-    searchAttornies: builder.query({
+    searchAttornies: builder.query<PaginatedResults<Attorney>, { search: string }>({
       query: ({ search }) => ({
         url: `contact/?category=attorney&search=${search}`,
         method: 'get',
       }),
     }),
-    searchAgencies: builder.query({
+    searchAgencies: builder.query<PaginatedResults<Agency>, { search: string }>({
       query: ({ search }) => ({
         url: `agency/?search=${search}`,
         method: 'get',
       }),
     }),
-    createContact: builder.mutation({
-      query: ({ data }) => ({ url: `contact/`, method: 'post', data }),
-      invalidatesTags: (result) =>
-        result
-          ? [
-              { type: 'ContactList', id: result.category },
-              { type: 'ContactFilterOptions', id: result.category },
-            ]
-          : [],
-    }),
-    updateContact: builder.mutation({
-      query: ({ id, data }) => ({ url: `contact/${id}/`, method: 'put', data }),
-      invalidatesTags: (result) =>
-        result
-          ? [
-              { type: 'ContactList', id: result.category },
-              { type: 'ContactFilterOptions', id: result.category },
-            ]
-          : [],
-    }),
-    createClient: builder.mutation({
+    createClient: builder.mutation<Client, { data: Omit<Client, 'pk' | 'user' | 'batches'> }>({
       query: ({ data }) => ({ url: `client/`, method: 'post', data }),
     }),
-    updateClient: builder.mutation<Client, { id: number; data: Partial<Client> }>({
+    updateClient: builder.mutation<Client, { id: number; data: Omit<Client, 'pk'> }>({
       query: ({ id, data }) => ({ url: `client/${id}/`, method: 'put', data }),
       invalidatesTags: (result) => {
         if (!result) {
@@ -79,50 +69,50 @@ export const api = createApi({
           { type: 'ContactList', id: result.category },
           { type: 'ContactFilterOptions', id: result.category },
         ] as TagDescription<'ContactList' | 'ContactFilterOptions' | 'Batch'>[];
-        console.log(result);
         result?.batches?.forEach((batchId) => tags.push({ type: 'Batch', id: batchId }));
         return tags;
       },
     }),
-    deleteAgency: builder.mutation({
+    deleteAgency: builder.mutation<Record<string, never>, { id: number }>({
       query: ({ id }) => ({ url: `agency/${id}/`, method: 'delete' }),
-      invalidatesTags: [
+      invalidatesTags: invalidatesTagsWithResult([
         { type: 'ContactList', id: 'agency' },
         { type: 'ContactFilterOptions', id: 'agency' },
-      ],
+      ]),
     }),
-    previewImportAgencies: builder.mutation({
+    previewImportAgencies: builder.mutation<ImportResults, unknown>({
       query: ({ data }) => ({ url: `agency/preview_import_agencies/`, method: 'put', data }),
     }),
-    importAgencies: builder.mutation({
+    importAgencies: builder.mutation<Record<string, never>, unknown>({
       query: ({ data }) => ({ url: `agency/import_agencies/`, method: 'put', data }),
-      invalidatesTags: [{ type: 'ContactList', id: 'agency' }],
+      invalidatesTags: invalidatesTagsWithResult([{ type: 'ContactList', id: 'agency' }]),
     }),
-    searchClients: builder.query({
+    searchClients: builder.query<PaginatedResults<Client>, { search: string }>({
       query: ({ search }) => ({
         url: `client/?search=${search}`,
         method: 'get',
       }),
     }),
-    getContactFilterOptions: builder.query({
-      query: ({ params }) => ({ url: 'contact/get_filter_options/', method: 'get', params }),
-      providesTags: (result, _error, { params: { category } }) =>
-        result ? [{ type: 'ContactFilterOptions', id: category }] : [],
-    }),
-    checkLogin: builder.query({
+    getContactFilterOptions: builder.query<string[], { params: { field: string; category: Category; search: string } }>(
+      {
+        query: ({ params }) => ({ url: 'contact/get_filter_options/', method: 'get', params }),
+        providesTags: (_result, _error, { params: { category } }) => [{ type: 'ContactFilterOptions', id: category }],
+      },
+    ),
+    checkLogin: builder.query<{ user: User }, Record<string, never>>({
       query: () => ({ url: 'token/', method: 'get' }),
     }),
-    createBatch: builder.mutation({
+    createBatch: builder.mutation<{ id: Id }, unknown>({
       query: ({ data }) => ({ url: 'batch/', method: 'post', timeout: 30 * 1000, data }),
-      invalidatesTags: (result) => (result ? [{ type: 'Batch' }] : []),
+      invalidatesTags: invalidatesTagsWithResult(['Batch']),
     }),
-    createBatchFromRecordSpreadsheet: builder.mutation({
+    createBatchFromRecordSpreadsheet: builder.mutation<{ batch_id: Id }, unknown>({
       query: ({ data }) => ({ url: `batch/import_spreadsheet/`, method: 'post', timeout: 30 * 1000, data }),
-      invalidatesTags: (result) => (result ? [{ type: 'Batch' }] : []),
+      invalidatesTags: invalidatesTagsWithResult(['Batch']),
     }),
-    deleteBatch: builder.mutation({
+    deleteBatch: builder.mutation<Record<string, never>, { id: Id }>({
       query: ({ id }) => ({ url: `batch/${id}/`, method: 'delete' }),
-      invalidatesTags: ['Batch'],
+      invalidatesTags: invalidatesTagsWithResult(['Batch']),
     }),
     updateBatch: builder.mutation<Batch, { id: number; data: unknown }>({
       query: ({ id, data }) => ({ url: `batch/${id}/`, method: 'put', data }),
@@ -143,21 +133,21 @@ export const api = createApi({
         return tags;
       },
     }),
-    getUserBatches: builder.query({
+    getUserBatches: builder.query<PaginatedResults<Batch>, { user: string; limit: number; offset: number }>({
       query: ({ user, limit, offset }) => ({ url: `batch/`, method: 'get', params: { user, limit, offset } }),
       providesTags: ['Batch'],
     }),
-    combineBatches: builder.mutation({
+    combineBatches: builder.mutation<Batch, { batchIds: Id[]; label: string }>({
       query: (data) => ({ url: 'batch/combine_batches/', method: 'post', data }),
-      invalidatesTags: ['Batch'],
+      invalidatesTags: invalidatesTagsWithResult(['Batch']),
     }),
-    login: builder.mutation({
+    login: builder.mutation<{ detail: string } & User, { username: string; password: string }>({
       query: (data) => ({ url: 'token/', method: 'post', data }),
     }),
-    logout: builder.mutation({
+    logout: builder.mutation<{ detail: string }, Record<string, never>>({
       query: () => ({ url: 'token/', method: 'delete' }),
     }),
-    users: builder.query({
+    users: builder.query<PaginatedResults<User>, { queryString: string; id?: Id }>({
       query: ({ queryString, id }) => {
         let url = 'users/';
         if (id) {
@@ -168,19 +158,22 @@ export const api = createApi({
       },
       providesTags: ['User'],
     }),
-    createUser: builder.mutation({
+    createUser: builder.mutation<User, { email: string; is_admin: boolean; username: string }>({
       query: (params) => ({ url: `users/`, method: 'post', data: { ...params } }),
-      invalidatesTags: ['User'],
+      invalidatesTags: invalidatesTagsWithResult(['User']),
     }),
-    modifyUser: builder.mutation({
+    modifyUser: builder.mutation<
+      User,
+      { id: Id; method: Method; data: { email: string; is_admin: boolean; username: string } }
+    >({
       query: ({ id, data, method = 'put' }) => ({ url: `users/${id}/`, method, data }),
-      invalidatesTags: ['User'],
+      invalidatesTags: invalidatesTagsWithResult(['User']),
     }),
-    petition: builder.query({
+    petition: builder.query<Petition, { petitionId: Id }>({
       query: ({ petitionId }) => ({ url: `/petitions/${petitionId}/`, method: 'GET' }),
       providesTags: (_result, _err, { petitionId }) => [{ type: 'Petition', id: petitionId }],
     }),
-    recalculatePetitions: builder.mutation({
+    recalculatePetitions: builder.mutation<Petition, { petitionId: Id; offenseRecordIds: Id[] }>({
       query: ({ petitionId, offenseRecordIds }) => ({
         url: `/petitions/${petitionId}/recalculate_petitions/`,
         data: { offense_record_ids: offenseRecordIds },
@@ -191,7 +184,7 @@ export const api = createApi({
         { type: 'Petition', id: petitionId },
       ],
     }),
-    assignAgenciesToDocuments: builder.mutation({
+    assignAgenciesToDocuments: builder.mutation<Petition, { petitionId: Id; agencies: Agency[] }>({
       query: ({ petitionId, agencies }) => ({
         url: `/petitions/${petitionId}/assign_agencies_to_documents/`,
         method: 'post',
@@ -202,7 +195,7 @@ export const api = createApi({
         { type: 'Petition', id: petitionId },
       ],
     }),
-    assignClientToBatch: builder.mutation({
+    assignClientToBatch: builder.mutation<{ batch_id: Id }, { batchId: Id; data: { client_id: number } }>({
       query: ({ batchId, data }) => ({
         url: `/batch/${batchId}/assign_client_to_batch/`,
         method: 'post',
@@ -212,11 +205,7 @@ export const api = createApi({
         if (!result) {
           return [];
         }
-        return [
-          { type: 'ContactList', id: result.category },
-          { type: 'ContactFilterOptions', id: result.category },
-          { type: 'Batch', id: result.batch_id },
-        ];
+        return ['ContactList', 'ContactFilterOptions', { type: 'Batch', id: result.batch_id }];
       },
     }),
   }),
@@ -230,8 +219,6 @@ export const {
   useLazySearchAgenciesQuery,
   useLazySearchAttorniesQuery,
   useLazySearchClientsQuery,
-  useCreateContactMutation,
-  useUpdateContactMutation,
   useCreateClientMutation,
   useUpdateClientMutation,
   useDeleteAgencyMutation,

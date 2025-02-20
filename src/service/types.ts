@@ -57,7 +57,7 @@ export interface Contact<T extends Category> {
   zipcode: string;
 }
 
-export type Agency = Contact<'agency'>;
+export type Agency = Contact<'agency'> & { is_sheriff: boolean };
 export type Attorney = Contact<'attorney'>;
 export type Client = Contact<'client'> & {
   user: Id;
@@ -100,4 +100,27 @@ export interface Batch {
   generate_letter_errors: Validations;
   generate_summary_errors: Validations;
   client_errors: Validations[];
+}
+
+export interface User {
+  pk: Id;
+  username: string;
+  email: string;
+  is_admin: boolean;
+  is_staff: boolean;
+  admin_url: string;
+  last_login: Datetime;
+}
+
+export interface PaginatedResults<T> {
+  count: number;
+  next: string;
+  previous: string;
+  results: T[];
+}
+
+export interface ImportResults {
+  has_errors: boolean;
+  row_errors: Record<string, unknown>;
+  row_diffs: Agency & { new_fields: (keyof Agency)[] };
 }
