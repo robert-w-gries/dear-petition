@@ -36,7 +36,7 @@ const WarningModal = styled(Modal)`
   }
 `;
 
-const BrowserWarning = ({ hideModal, showWarning }) => (
+const BrowserWarning = ({ hideModal, showWarning }: { hideModal: () => void; showWarning: boolean }) => (
   <WarningModal isVisible={showWarning} closeModal={hideModal}>
     <h3>WARNING</h3>
     <p>It appears you are not using Chrome. This may cause issues while using the application.</p>

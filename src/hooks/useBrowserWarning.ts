@@ -10,7 +10,7 @@ const useBrowserWarning = () => {
       setShouldDisplay(true);
     }
   }, []);
-  return [ENABLE_BROWSER_WARNING && shouldDisplay, () => setShouldDisplay(false)];
+  return [ENABLE_BROWSER_WARNING && shouldDisplay, () => setShouldDisplay(false)] as [boolean, () => void];
 };
 
 export default useBrowserWarning;

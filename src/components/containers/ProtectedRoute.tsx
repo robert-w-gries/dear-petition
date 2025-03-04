@@ -1,12 +1,16 @@
-import { useEffect } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { Redirect, Route } from 'react-router-dom';
+import { Redirect, Route, RouteProps } from 'react-router-dom';
 
 import useAuth from '../../hooks/useAuth';
 import { useLazyCheckLoginQuery } from '../../service/api';
 import { loggedIn } from '../../slices/auth';
 
-function ProtectedRoute({ children, isAdminOnly, ...props }) {
+function ProtectedRoute({
+  children,
+  isAdminOnly,
+  ...props
+}: { children?: ReactNode; isAdminOnly?: boolean } & RouteProps) {
   const { user } = useAuth();
   const dispatch = useDispatch();
   const [checkLogin, { data, isFetching, isUninitialized }] = useLazyCheckLoginQuery();
@@ -14,7 +18,7 @@ function ProtectedRoute({ children, isAdminOnly, ...props }) {
 
   useEffect(() => {
     if (!user && isUninitialized) {
-      checkLogin();
+      checkLogin({});
     }
   }, [checkLogin, user, isUninitialized]);
 
