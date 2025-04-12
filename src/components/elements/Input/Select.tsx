@@ -1,8 +1,15 @@
-import PropTypes from 'prop-types';
-import { SelectWrapper, SelectStyled, ActualSelectStyled, InputErrors } from './Select.styled';
 import { AnimatePresence } from 'framer-motion';
+import { Props as ReactSelectProps } from 'react-select';
 
-function Select({ value, onChange, label, errors, options, disabled, className }) {
+import { SelectWrapper, SelectStyled, ActualSelectStyled, InputErrors } from './Select.styled';
+
+type SelectProps = {
+  label: string;
+  errors?: string[];
+  disabled?: boolean;
+} & ReactSelectProps;
+
+function Select({ value, onChange, label, errors, options, disabled, className }: SelectProps) {
   return (
     <SelectWrapper className={className}>
       <SelectStyled>
@@ -22,24 +29,5 @@ function Select({ value, onChange, label, errors, options, disabled, className }
     </SelectWrapper>
   );
 }
-
-Select.propTypes = {
-  value: PropTypes.shape({
-    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    label: PropTypes.string,
-  }).isRequired,
-  onChange: PropTypes.func.isRequired,
-  label: PropTypes.string,
-  options: PropTypes.arrayOf(
-    PropTypes.shape({
-      value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-      label: PropTypes.string,
-    }),
-  ).isRequired,
-};
-
-Select.defaultProps = {
-  label: '',
-};
 
 export default Select;

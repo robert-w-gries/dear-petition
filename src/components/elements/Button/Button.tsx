@@ -1,10 +1,9 @@
-import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import keyAndAmbientShadows from '../../../styles/shadows';
 import { colorPrimary, colorWhite, colorCaution, greyScale } from '../../../styles/colors';
 import { fontPrimary } from '../../../styles/fonts';
 
-export const Button = styled.button`
+export const Button = styled.button<{ colorClass?: ColorClass }>`
   cursor: pointer;
   ${({ colorClass }) => mapTypeToStartingState(colorClass)}
   ${({ disabled }) => disabled && mapTypeToStartingState(DISABLED)}
@@ -43,7 +42,8 @@ export const CAUTION = 'caution';
 export const NEUTRAL = 'neutral';
 export const DISABLED = 'disabled';
 
-function mapTypeToStartingState(colorClass) {
+type ColorClass = 'positive' | 'caution' | 'neutral' | 'disabled';
+function mapTypeToStartingState(colorClass?: ColorClass) {
   switch (colorClass) {
     case POSITIVE:
       return positive;
@@ -79,14 +79,3 @@ const neutral = css`
   border: 1px solid ${colorPrimary};
   color: ${colorPrimary};
 `;
-
-Button.propTypes = {
-  /** Reflects the state of the button */
-  colorClass: PropTypes.oneOf([POSITIVE, CAUTION, NEUTRAL, DISABLED]),
-  /** What happens when the button is clicked */
-  onClick: PropTypes.func.isRequired,
-};
-
-Button.defaultProps = {
-  colorClass: POSITIVE,
-};

@@ -19,6 +19,10 @@ export type AxiosBaseQueryReturnValue = QueryReturnValue<
   Pick<AxiosResponse<unknown>, 'status' | 'data'>,
   { request: AxiosBaseQueryArgs; response: AxiosResponse }
 >;
+export type ErrorDataType = Pick<AxiosResponse<unknown>, 'status' | 'data'>;
+
+export const isErrorDataType = (data: unknown): data is ErrorDataType =>
+  typeof data === 'object' && !!data && 'status' in data && 'data' in data;
 
 const isAxiosError = (data: unknown): data is AxiosError<unknown> =>
   typeof data === 'object' && !!data && 'response' in data;

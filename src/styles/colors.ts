@@ -23,6 +23,6 @@ export const colorWarning = colorYellow;
  * greyScale
  * @param {number} degree - Number, 0 - 10. 0 being black 10 being white
  */
-export function greyScale(degree) {
+export function greyScale(degree: number) {
   return `hsl(0, 0%, ${degree * 10}%)`;
 }

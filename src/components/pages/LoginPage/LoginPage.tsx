@@ -1,25 +1,24 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import styled from 'styled-components';
+
 import { SplashLogo, FormErrors, InputStyled, PasswordInputStyled } from './LoginPage.styled';
 import { Button } from '../../elements/Button';
-
-// Assets
 import ezExpungeLogoWithLancText from '../../../assets/img/ez_expunge_logo_with_lanc.png';
-
-// Routing
-import { useHistory } from 'react-router-dom';
-
 import useAuth from '../../../hooks/useAuth';
 import { loggedIn } from '../../../slices/auth';
 import { useLoginMutation } from '../../../service/api';
-import styled from 'styled-components';
+import { isErrorDataType } from '../../../service/axios';
 
 const LoginButton = styled(Button)`
   padding: 1rem 3rem;
   font-size: 1.7rem;
   width: 100%;
 `;
+
+type FormValues = { username: string; password: string };
 
 function Login() {
   const { user: authenticatedUser } = useAuth();
@@ -28,7 +27,7 @@ function Login() {
   const dispatch = useDispatch();
 
   // State
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<Partial<FormValues & { detail: string }>>({});
 
   useEffect(() => {
     if (authenticatedUser) {
@@ -36,14 +35,11 @@ function Login() {
     }
   }, [authenticatedUser, history]);
 
-  const { control, handleSubmit } = useForm({
-    defaultValues: {
-      username: '',
-      password: '',
-    },
+  const { control, handleSubmit } = useForm<FormValues>({
+    defaultValues: { username: '', password: '' },
   });
 
-  const handleLogin = async ({ username, password }) => {
+  const handleLogin = async ({ username, password }: { username: string; password: string }) => {
     // e.preventDefault();
     setErrors({});
     try {
@@ -51,10 +47,10 @@ function Login() {
       dispatch(loggedIn(user));
       history.replace('/');
     } catch (error) {
-      if (error?.data) {
+      if (isErrorDataType(error)) {
         setErrors((prev) => ({
           ...prev,
-          ...error.data,
+          ...(error.data as Partial<FormValues>),
         }));
       }
     }

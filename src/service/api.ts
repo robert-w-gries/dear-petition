@@ -141,7 +141,7 @@ export const api = createApi({
       query: (data) => ({ url: 'batch/combine_batches/', method: 'post', data }),
       invalidatesTags: invalidatesTagsWithResult(['Batch']),
     }),
-    login: builder.mutation<{ detail: string } & User, { username: string; password: string }>({
+    login: builder.mutation<{ detail: string } & { user: User }, { username: string; password: string }>({
       query: (data) => ({ url: 'token/', method: 'post', data }),
     }),
     logout: builder.mutation<{ detail: string }, Record<string, never>>({
